@@ -4,6 +4,7 @@ import {
   useFonts,
   Karla_400Regular,
   Karla_700Bold,
+  Karla_300Light,
 } from "@expo-google-fonts/karla"
 
 import {
@@ -11,15 +12,20 @@ import {
   Text,
   Center,
   StatusBar,
+  SafeAreaView,
+  VStack,
 } from "@gluestack-ui/themed"
 import { config } from "./config/gluestack-ui.config"
 
 import { Loading } from "@components/Loading"
+import { SignIn } from "@screens/auth/SignIn"
+import { SignUp } from "@screens/auth/SignUp"
 
 export default function App() {
   const [fontsLoaded] = useFonts({
     Karla_400Regular,
     Karla_700Bold,
+    Karla_300Light,
   })
 
   return (
@@ -29,15 +35,9 @@ export default function App() {
         backgroundColor="$gray600"
         translucent
       />
-      {fontsLoaded ? (
-        <Center flex={1} bg="$gray600">
-          <Text color="$blue" fontSize="$xl">
-            Home
-          </Text>
-        </Center>
-      ) : (
-        <Loading />
-      )}
+      <VStack bg="$gray700" flex={1}>
+        {fontsLoaded ? <SignIn /> : <Loading />}
+      </VStack>
     </GluestackUIProvider>
   )
 }
