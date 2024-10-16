@@ -36,7 +36,7 @@ export default function App() {
         translucent
       />
       <VStack bg="$gray700" flex={1}>
-        {fontsLoaded ? <SignIn /> : <Loading />}
+        {fontsLoaded ? <SignUp /> : <Loading />}
       </VStack>
     </GluestackUIProvider>
   )

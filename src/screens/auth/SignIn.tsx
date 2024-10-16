@@ -45,21 +45,6 @@ export function SignIn() {
             buttonVariant="primary"
             onPress={handleSignIn}
           />
-
-          {/* <Button
-            size="sm"
-            mt={"$4"}
-            bgColor={"$blueLight"}
-            w={"$full"}
-            p={"$3"}
-            minHeight={"$11"}
-            maxHeight={"$11"}
-            borderRadius={"$md"}
-          >
-            <ButtonText color={"$white"} fontFamily="$heading" fontSize={"$sm"}>
-              Entrar
-            </ButtonText>
-          </Button> */}
         </Center>
       </VStack>
 
