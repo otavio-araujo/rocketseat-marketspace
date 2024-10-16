@@ -1,10 +1,15 @@
-import { ComponentProps } from "react"
+import { ComponentProps, useState } from "react"
+
 import {
   Input as GluestackInput,
   InputField,
   FormControl,
   FormControlError,
   FormControlErrorText,
+  InputSlot,
+  InputIcon,
+  EyeIcon,
+  EyeOffIcon,
 } from "@gluestack-ui/themed"
 
 type Props = ComponentProps<typeof InputField> & {
@@ -21,6 +26,13 @@ export function Input({
   ...rest
 }: Props) {
   const invalid = !!errorMessages || isInvalid
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleState = () => {
+    setShowPassword((showState) => {
+      return !showState
+    })
+  }
 
   return (
     <FormControl w={"$full"} isInvalid={invalid}>
@@ -43,12 +55,21 @@ export function Input({
       >
         <InputField
           {...rest}
-          type={type}
+          type={type === "password" && !showPassword ? "password" : "text"}
           color={"$gray200"}
           placeholderTextColor={"$gray400"}
           fontFamily="$body"
           fontSize={"$md"}
         />
+
+        {type === "password" && (
+          <InputSlot pr={"$2"} onPress={handleState}>
+            <InputIcon
+              as={showPassword ? EyeIcon : EyeOffIcon}
+              color={"$gray300"}
+            />
+          </InputSlot>
+        )}
       </GluestackInput>
       <FormControlError>
         <FormControlErrorText
