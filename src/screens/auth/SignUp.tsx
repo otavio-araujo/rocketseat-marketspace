@@ -14,6 +14,10 @@ export function SignUp() {
   function handleSignIn() {
     console.log("It goes to SignIn Screen")
   }
+
+  function handleUserAvatar() {
+    console.log("It changes the Avatar")
+  }
   return (
     <VStack flex={1} bg={"$gray600"} pt={"$16"} px={"$12"} pb={"$8"}>
       <Center>
@@ -34,7 +38,11 @@ export function SignUp() {
       </Center>
 
       <Center mt={"$8"} gap={"$4"}>
-        <Avatar />
+        <Avatar
+          imageSource="https://i.pravatar.cc/300"
+          isEditable
+          handleAvatar={handleUserAvatar}
+        />
 
         <Input type="text" placeholder="Nome" />
         <Input type="text" placeholder="E-mail" />
