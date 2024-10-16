@@ -2,16 +2,28 @@ import {
   Button,
   ButtonText,
   Center,
+  EyeIcon,
+  EyeOffIcon,
   Input,
   InputField,
+  InputIcon,
+  InputSlot,
   Text,
   VStack,
 } from "@gluestack-ui/themed"
 
 import Logo from "@assets/logo/logo.svg"
 import Marketspace from "@assets/logo/marketspace.svg"
+import { useState } from "react"
 
 export function SignIn() {
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleState = () => {
+    setShowPassword((showState) => {
+      return !showState
+    })
+  }
   return (
     <VStack flex={1}>
       <VStack
@@ -64,13 +76,20 @@ export function SignIn() {
             rounded={"$md"}
           >
             <InputField
-              type="password"
+              type={showPassword ? "text" : "password"}
               color={"$gray200"}
               placeholder="Senha"
               placeholderTextColor={"$gray400"}
               fontFamily="$body"
               fontSize={"$md"}
             />
+
+            <InputSlot pr={"$2"} onPress={handleState}>
+              <InputIcon
+                as={showPassword ? EyeIcon : EyeOffIcon}
+                color={"$gray300"}
+              />
+            </InputSlot>
           </Input>
 
           <Button
@@ -89,6 +108,7 @@ export function SignIn() {
           </Button>
         </Center>
       </VStack>
+
       <VStack mt={"$14"} px={"$12"}>
         <Center gap={"$4"}>
           <Text fontFamily={"$body"} fontSize={"$sm"}>
