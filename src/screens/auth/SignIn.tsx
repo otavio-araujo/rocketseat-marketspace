@@ -1,29 +1,17 @@
-import {
-  Button,
-  ButtonText,
-  Center,
-  EyeIcon,
-  EyeOffIcon,
-  Input as GluestackInput,
-  InputField,
-  InputIcon,
-  InputSlot,
-  Text,
-  VStack,
-} from "@gluestack-ui/themed"
+import { Center, Text, VStack } from "@gluestack-ui/themed"
 
 import Logo from "@assets/logo/logo.svg"
 import Marketspace from "@assets/logo/marketspace.svg"
-import { useState } from "react"
+
 import { Input } from "@components/Input"
+import { Button } from "@components/Button"
 
 export function SignIn() {
-  const [showPassword, setShowPassword] = useState(false)
-
-  const handleState = () => {
-    setShowPassword((showState) => {
-      return !showState
-    })
+  function handleSignUp() {
+    console.log("It goes to SignUp Screen")
+  }
+  function handleSignIn() {
+    console.log("It logs in the User.")
   }
   return (
     <VStack flex={1}>
@@ -52,33 +40,13 @@ export function SignIn() {
           <Input type="text" placeholder="E-mail" />
           <Input type="password" placeholder="Senha" />
 
-          {/* <GluestackInput
-            borderWidth={0}
-            bg={"$gray700"}
-            px={"$4"}
-            py={"$3"}
-            minHeight={"$11"}
-            maxHeight={"$11"}
-            rounded={"$md"}
-          >
-            <InputField
-              type={showPassword ? "text" : "password"}
-              color={"$gray200"}
-              placeholder="Senha"
-              placeholderTextColor={"$gray400"}
-              fontFamily="$body"
-              fontSize={"$md"}
-            />
-
-            <InputSlot pr={"$2"} onPress={handleState}>
-              <InputIcon
-                as={showPassword ? EyeIcon : EyeOffIcon}
-                color={"$gray300"}
-              />
-            </InputSlot>
-          </GluestackInput> */}
-
           <Button
+            label="Entrar"
+            buttonVariant="primary"
+            onPress={handleSignIn}
+          />
+
+          {/* <Button
             size="sm"
             mt={"$4"}
             bgColor={"$blueLight"}
@@ -91,7 +59,7 @@ export function SignIn() {
             <ButtonText color={"$white"} fontFamily="$heading" fontSize={"$sm"}>
               Entrar
             </ButtonText>
-          </Button>
+          </Button> */}
         </Center>
       </VStack>
 
@@ -100,23 +68,12 @@ export function SignIn() {
           <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
             Ainda não tem acesso?
           </Text>
+
           <Button
-            size="sm"
-            bgColor={"$gray500"}
-            w={"$full"}
-            p={"$3"}
-            minHeight={"$11"}
-            maxHeight={"$11"}
-            borderRadius={"$md"}
-          >
-            <ButtonText
-              color={"$gray200"}
-              fontFamily="$heading"
-              fontSize={"$sm"}
-            >
-              Criar uma conta
-            </ButtonText>
-          </Button>
+            label="Criar uma conta"
+            buttonVariant="muted"
+            onPress={handleSignUp}
+          />
         </Center>
       </VStack>
     </VStack>
