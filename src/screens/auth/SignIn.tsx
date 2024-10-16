@@ -4,7 +4,7 @@ import {
   Center,
   EyeIcon,
   EyeOffIcon,
-  Input,
+  Input as GluestackInput,
   InputField,
   InputIcon,
   InputSlot,
@@ -15,6 +15,7 @@ import {
 import Logo from "@assets/logo/logo.svg"
 import Marketspace from "@assets/logo/marketspace.svg"
 import { useState } from "react"
+import { Input } from "@components/Input"
 
 export function SignIn() {
   const [showPassword, setShowPassword] = useState(false)
@@ -44,29 +45,14 @@ export function SignIn() {
         </Center>
 
         <Center mt={"$19"} gap={"$4"}>
-          <Text fontFamily={"$body"} fontSize={"$sm"}>
+          <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
             Acesse sua conta
           </Text>
-          <Input
-            borderWidth={0}
-            bg={"$gray700"}
-            px={"$4"}
-            py={"$3"}
-            minHeight={"$11"}
-            maxHeight={"$11"}
-            rounded={"$md"}
-          >
-            <InputField
-              keyboardType="email-address"
-              color={"$gray200"}
-              placeholder="E-mail"
-              placeholderTextColor={"$gray400"}
-              fontFamily="$body"
-              fontSize={"$md"}
-            />
-          </Input>
 
-          <Input
+          <Input type="text" placeholder="E-mail" />
+          <Input type="password" placeholder="Senha" />
+
+          {/* <GluestackInput
             borderWidth={0}
             bg={"$gray700"}
             px={"$4"}
@@ -90,7 +76,7 @@ export function SignIn() {
                 color={"$gray300"}
               />
             </InputSlot>
-          </Input>
+          </GluestackInput> */}
 
           <Button
             size="sm"
@@ -111,7 +97,7 @@ export function SignIn() {
 
       <VStack mt={"$14"} px={"$12"}>
         <Center gap={"$4"}>
-          <Text fontFamily={"$body"} fontSize={"$sm"}>
+          <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
             Ainda não tem acesso?
           </Text>
           <Button
