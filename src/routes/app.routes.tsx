@@ -22,6 +22,7 @@ import { HomeTabs } from "./homeTabs.routes"
 
 export type AppRoutes = {
   home: undefined
+  homeTabs: undefined
   userAds: undefined
   logout: undefined
   adCreate: undefined
@@ -43,7 +44,7 @@ export function AppRoutes() {
         headerShown: false,
       }}
     >
-      <Screen name="home" component={HomeTabs} />
+      <Screen name="homeTabs" component={HomeTabs} />
       <Screen name="userAds" component={UserAds} />
       <Screen name="adCreate" component={AdCreate} />
       <Screen name="adDetail" component={AdDetail} />
