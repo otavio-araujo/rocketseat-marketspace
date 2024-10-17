@@ -1,18 +1,22 @@
+import { useNavigation } from "@react-navigation/native"
+
 import { Center, Text, VStack } from "@gluestack-ui/themed"
 
 import Logo from "@assets/logo/logo.svg"
-import Marketspace from "@assets/logo/marketspace.svg"
 
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 import { Avatar } from "@components/Avatar"
 
+import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
+
 export function SignUp() {
+  const navigation = useNavigation<AuthNavigatorRoutesProps>()
   function handleSignUp() {
     console.log("It signs up the User.")
   }
-  function handleSignIn() {
-    console.log("It goes to SignIn Screen")
+  function handleGoBack() {
+    navigation.navigate("signIn")
   }
 
   function handleUserAvatar() {
@@ -59,7 +63,7 @@ export function SignUp() {
           <Button
             label="Ir para o login"
             buttonVariant="muted"
-            onPress={handleSignIn}
+            onPress={handleGoBack}
           />
         </Center>
       </Center>
