@@ -9,7 +9,6 @@ import {
 
 import User from "phosphor-react-native/src/icons/User"
 import PencilSimpleLine from "phosphor-react-native/src/icons/PencilSimpleLine"
-import { Image } from "react-native"
 
 type Props = ComponentProps<typeof GluestackAvatar> & {
   imageSource?: string
