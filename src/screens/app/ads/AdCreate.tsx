@@ -9,12 +9,16 @@ export function AdCreate() {
   function handleAdPreview() {
     navigation.navigate("adPreview")
   }
+  function handleGoBack() {
+    navigation.goBack()
+  }
   return (
     <Center flex={1} justifyContent="center" px={"$12"}>
       <Text fontFamily={"$body"} fontSize={"$lg"}>
         AdCreate
       </Text>
       <Button label="Avançar" onPress={handleAdPreview} />
+      <Button label="Voltar" onPress={handleGoBack} />
     </Center>
   )
 }

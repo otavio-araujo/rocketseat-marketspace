@@ -17,8 +17,10 @@ import House from "phosphor-react-native/src/icons/House"
 import SignOut from "phosphor-react-native/src/icons/SignOut"
 import { Platform } from "react-native"
 import { LogOUt } from "@screens/app/LogOut"
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { HomeTabs } from "./homeTabs.routes"
 
-type AppRoutes = {
+export type AppRoutes = {
   home: undefined
   userAds: undefined
   logout: undefined
@@ -30,7 +32,7 @@ type AppRoutes = {
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>
 
-const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>()
+const { Navigator, Screen } = createNativeStackNavigator<AppRoutes>()
 
 export function AppRoutes() {
   const { tokens } = gluestackUIConfig
@@ -39,81 +41,14 @@ export function AppRoutes() {
     <Navigator
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: tokens.colors.gray200,
-        tabBarInactiveTintColor: tokens.colors.gray400,
-        tabBarStyle: {
-          backgroundColor: tokens.colors.gray700,
-          borderTopWidth: 0,
-          height: Platform.OS === "android" ? tokens.space["18"] : 96,
-          paddingBottom: tokens.space["7"],
-          paddingTop: tokens.space["5"],
-        },
       }}
     >
-      <Screen
-        name="home"
-        component={Home}
-        options={{
-          tabBarIcon: ({ color }) => <House size={iconSize} color={color} />,
-        }}
-      />
-      <Screen
-        name="userAds"
-        component={UserAds}
-        options={{
-          tabBarIcon: ({ color }) => <Tag size={iconSize} color={color} />,
-        }}
-      />
-      <Screen
-        name="logout"
-        component={LogOUt}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <SignOut size={iconSize} color={tokens.colors.redLight} />
-          ),
-        }}
-      />
-      <Screen
-        name="adCreate"
-        component={AdCreate}
-        options={() => ({
-          tabBarStyle: {
-            display: "none",
-          },
-          tabBarButton: () => null,
-        })}
-      />
-      <Screen
-        name="adDetail"
-        component={AdDetail}
-        options={() => ({
-          tabBarStyle: {
-            display: "none",
-          },
-          tabBarButton: () => null,
-        })}
-      />
-      <Screen
-        name="adPreview"
-        component={AdPreview}
-        options={() => ({
-          tabBarStyle: {
-            display: "none",
-          },
-          tabBarButton: () => null,
-        })}
-      />
-      <Screen
-        name="userAdDetail"
-        component={UserAdDetail}
-        options={() => ({
-          tabBarStyle: {
-            display: "none",
-          },
-          tabBarButton: () => null,
-        })}
-      />
+      <Screen name="home" component={HomeTabs} />
+      <Screen name="userAds" component={UserAds} />
+      <Screen name="adCreate" component={AdCreate} />
+      <Screen name="adDetail" component={AdDetail} />
+      <Screen name="adPreview" component={AdPreview} />
+      <Screen name="userAdDetail" component={UserAdDetail} />
     </Navigator>
   )
 }

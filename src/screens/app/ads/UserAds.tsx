@@ -13,6 +13,10 @@ export function UserAds() {
   function handleAdCreate() {
     navigation.navigate("adCreate")
   }
+
+  function handleGoBack() {
+    navigation.goBack()
+  }
   return (
     <Center flex={1} justifyContent="center" px={"$12"}>
       <Text fontFamily={"$body"} fontSize={"$lg"}>
@@ -20,6 +24,7 @@ export function UserAds() {
       </Text>
       <Button label="Criar anúncio" onPress={handleAdCreate} />
       <Button label="Detalhes do anúncio" onPress={handleUserAdDetail} />
+      <Button label="Voltar" onPress={handleGoBack} />
     </Center>
   )
 }
