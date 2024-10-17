@@ -7,7 +7,7 @@ import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 export function Routes() {
   const theme = DefaultTheme
 
-  theme.colors.background = gluestackUIConfig.tokens.colors.gray700
+  theme.colors.background = gluestackUIConfig.tokens.colors.gray600
   return (
     <NavigationContainer theme={theme}>
       <AuthRoutes />

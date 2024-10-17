@@ -19,7 +19,7 @@ export function SignIn() {
     console.log("It logs in the User.")
   }
   return (
-    <VStack flex={1}>
+    <VStack flex={1} bg={"$gray700"}>
       <VStack
         bg={"$gray600"}
         pt={"$11"}
