@@ -24,8 +24,8 @@ export function Button({
     <GluestackButton
       {...rest}
       p={"$3"}
-      minHeight={"$12"}
-      maxHeight={"$12"}
+      minHeight={"$11"}
+      maxHeight={"$11"}
       borderRadius={"$md"}
       bgColor={
         buttonVariant === "dark"

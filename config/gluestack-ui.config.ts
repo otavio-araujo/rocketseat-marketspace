@@ -70,7 +70,9 @@ export const gluestackUIConfig = createConfig({
       "20": 80,
       "22": 88,
       "24": 96,
+      "25": 100,
       "32": 128,
+      "38": 152,
       "40": 160,
       "48": 192,
       "56": 224,
@@ -168,6 +170,7 @@ export const gluestackUIConfig = createConfig({
       light: "Karla_300Light",
     },
     fontSizes: {
+      xxs: 10,
       xs: 12,
       sm: 14,
       md: 16,

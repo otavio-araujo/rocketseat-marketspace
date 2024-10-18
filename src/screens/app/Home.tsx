@@ -9,6 +9,7 @@ import {
   ButtonIcon,
   Input,
   InputField,
+  Center,
 } from "@gluestack-ui/themed"
 
 import { gluestackUIConfig } from "../../../config/gluestack-ui.config"
@@ -24,22 +25,17 @@ import { AppNavigatorRoutesProps } from "@routes/app.routes"
 import { Button } from "@components/Button"
 import { Avatar } from "@components/Avatar"
 import { Divider } from "@gluestack-ui/themed"
+import { ProductCard } from "@components/ProductCard"
+import { FlatList } from "react-native"
 
 export function Home() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
   const { tokens } = gluestackUIConfig
+  const adsList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-  function handleAdDetail() {
-    navigation.navigate("adDetail")
-  }
   return (
-    <ScrollView
-      flex={1}
-      showsVerticalScrollIndicator={false}
-      px={"$8"}
-      pt={"$8"}
-    >
+    <VStack flex={1} px={"$8"} pt={"$8"}>
       {/* Header */}
       <HStack justifyContent="space-between" alignItems="center">
         <HStack gap={"$2"} alignItems="center">
@@ -97,42 +93,67 @@ export function Home() {
       {/* End - User Ads - Stats */}
 
       {/* Search and Filters */}
-      <VStack mt={"$8"}>
+      <VStack mt={"$8"} mb={"$6"}>
         <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray300"}>
           Compre produtos variados
         </Text>
         <HStack
+          justifyContent="space-between"
+          alignItems="center"
+          minHeight={"$11"}
+          maxHeight={"$11"}
+          bg={"$gray700"}
+          rounded="$md"
           mt={"$3"}
           px={"$4"}
           py={"$3"}
           gap={"$3"}
-          bg={"$gray700"}
-          rounded="$md"
-          minHeight={"$11"}
-          maxHeight={"$11"}
-          alignItems="center"
-          justifyContent="space-between"
         >
           <Input flex={1} h={"auto"} borderWidth={0}>
             <InputField
+              placeholderTextColor={"$gray400"}
               placeholder="Buscar anúncio"
               color="$gray200"
-              placeholderTextColor={"$gray400"}
               fontSize={"$md"}
-              letterSpacing={"$lg"}
+              fontFamily={"$body"}
             />
           </Input>
           <HStack alignItems="center" gap={"$3"}>
             <MagnifyingGlass
               size={tokens.space[5]}
               color={tokens.colors.gray200}
+              weight="bold"
             />
             <Divider orientation="vertical" bg="$gray400" h={18} w={1} />
-            <Sliders size={tokens.space[5]} color={tokens.colors.gray200} />
+            <Sliders
+              size={tokens.space[5]}
+              color={tokens.colors.gray200}
+              weight="bold"
+            />
           </HStack>
         </HStack>
       </VStack>
       {/* End - Search and Filters */}
-    </ScrollView>
+
+      {/* Ads List */}
+      <FlatList
+        data={adsList}
+        keyExtractor={(item) => String(item)}
+        renderItem={({ item }) => <ProductCard />}
+        contentContainerStyle={{
+          paddingBottom: 68,
+          width: "100%",
+          gap: 24,
+        }}
+        columnWrapperStyle={{
+          flex: 1,
+          justifyContent: "space-between",
+          gap: 20,
+        }}
+        numColumns={2}
+        showsVerticalScrollIndicator={false}
+      />
+      {/* End - Ads List */}
+    </VStack>
   )
 }

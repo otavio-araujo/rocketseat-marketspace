@@ -18,13 +18,17 @@ export function UserAds() {
     navigation.goBack()
   }
   return (
-    <Center flex={1} justifyContent="center" px={"$12"}>
+    <Center flex={1} justifyContent="center" px={"$12"} gap={"$4"}>
       <Text fontFamily={"$body"} fontSize={"$lg"}>
         UserAds
       </Text>
-      <Button label="Criar anúncio" onPress={handleAdCreate} />
-      <Button label="Detalhes do anúncio" onPress={handleUserAdDetail} />
-      <Button label="Voltar" onPress={handleGoBack} />
+      <Button label="Criar anúncio" onPress={handleAdCreate} width={"$full"} />
+      <Button
+        label="Detalhes do anúncio"
+        onPress={handleUserAdDetail}
+        width={"$full"}
+      />
+      <Button label="Voltar" onPress={handleGoBack} width={"$full"} />
     </Center>
   )
 }

@@ -3,9 +3,10 @@ import {
   Avatar as GluestackAvatar,
   Fab,
   FabIcon,
-  View,
   AvatarImage,
 } from "@gluestack-ui/themed"
+
+import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 
 import User from "phosphor-react-native/src/icons/User"
 import PencilSimpleLine from "phosphor-react-native/src/icons/PencilSimpleLine"
@@ -13,33 +14,36 @@ import PencilSimpleLine from "phosphor-react-native/src/icons/PencilSimpleLine"
 type Props = ComponentProps<typeof GluestackAvatar> & {
   imageSource?: string
   isEditable?: boolean
+  isCardAd?: boolean
   handleAvatar?: () => void
 }
 
 export function Avatar({
   isEditable = false,
+  isCardAd = false,
   imageSource,
   handleAvatar,
   ...rest
 }: Props) {
+  const { tokens } = gluestackUIConfig
   return (
     <GluestackAvatar
-      borderColor={"$blueLight"}
+      borderColor={isCardAd ? "$gray700" : "$blueLight"}
       borderRadius={"$full"}
       justifyContent="center"
       alignItems="center"
       bgColor="$gray500"
-      minHeight={isEditable ? "$22" : "$14"}
-      maxHeight={isEditable ? "$22" : "$14"}
-      minWidth={isEditable ? "$22" : "$14"}
-      maxWidth={isEditable ? "$22" : "$14"}
+      minHeight={isEditable ? "$22" : isCardAd ? "$8" : "$14"}
+      maxHeight={isEditable ? "$22" : isCardAd ? "$8" : "$14"}
+      minWidth={isEditable ? "$22" : isCardAd ? "$8" : "$14"}
+      maxWidth={isEditable ? "$22" : isCardAd ? "$8" : "$14"}
       style={{
-        borderWidth: isEditable ? 3 : 2,
+        borderWidth: isEditable ? 3 : isCardAd ? 1 : 2,
       }}
       {...rest}
     >
       {isEditable ? (
-        <User size={44} color="#9F9BA1" weight="bold" />
+        <User size={44} color={tokens.colors.gray400} weight="bold" />
       ) : (
         <AvatarImage
           source={{
