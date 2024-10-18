@@ -29,10 +29,10 @@ export function Avatar({
       justifyContent="center"
       alignItems="center"
       bgColor="$gray500"
-      minHeight={isEditable ? "$22" : "$11"}
-      maxHeight={isEditable ? "$22" : "$11"}
-      minWidth={isEditable ? "$22" : "$11"}
-      maxWidth={isEditable ? "$22" : "$11"}
+      minHeight={isEditable ? "$22" : "$14"}
+      maxHeight={isEditable ? "$22" : "$14"}
+      minWidth={isEditable ? "$22" : "$14"}
+      maxWidth={isEditable ? "$22" : "$14"}
       style={{
         borderWidth: isEditable ? 3 : 2,
       }}

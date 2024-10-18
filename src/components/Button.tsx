@@ -1,27 +1,31 @@
-import { Button as GluestackButton, ButtonText } from "@gluestack-ui/themed"
-import { ComponentProps } from "react"
+import { ComponentProps, ReactNode } from "react"
+import {
+  Button as GluestackButton,
+  ButtonText,
+  ButtonIcon,
+} from "@gluestack-ui/themed"
+import { IconProps } from "phosphor-react-native"
 
 type Props = ComponentProps<typeof GluestackButton> & {
   label: string
   buttonVariant?: "primary" | "muted" | "dark"
   isLoading?: boolean
+  icon?: any
 }
 
 export function Button({
   label,
   buttonVariant = "primary",
+  icon = false,
   isLoading = false,
   ...rest
 }: Props) {
   return (
     <GluestackButton
       {...rest}
-      size="sm"
-      mt={"$4"}
-      w={"$full"}
       p={"$3"}
-      minHeight={"$11"}
-      maxHeight={"$11"}
+      minHeight={"$12"}
+      maxHeight={"$12"}
       borderRadius={"$md"}
       bgColor={
         buttonVariant === "dark"
@@ -39,8 +43,15 @@ export function Button({
       }
       disabled={isLoading}
     >
+      {icon !== false && (
+        <ButtonIcon
+          as={icon}
+          mr="$2"
+          color={buttonVariant === "muted" ? "$gray300" : "$gray600"}
+        />
+      )}
       <ButtonText
-        color={buttonVariant === "muted" ? "$gray200" : "$white"}
+        color={buttonVariant === "muted" ? "$gray200" : "$gray700"}
         fontFamily="$heading"
         fontSize={"$sm"}
       >

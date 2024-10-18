@@ -1,6 +1,7 @@
+import { createConfig, createComponents } from "@gluestack-style/react"
 import { AnimationResolver } from "@gluestack-style/animation-resolver"
 import { MotionAnimationDriver } from "@gluestack-style/legend-motion-animation-driver"
-import { createConfig, createComponents } from "@gluestack-style/react"
+
 import * as componentsTheme from "./theme"
 
 export const gluestackUIConfig = createConfig({
@@ -29,6 +30,7 @@ export const gluestackUIConfig = createConfig({
     colors: {
       blue: "#364D9D",
       blueLight: "#647AC7",
+      bgBlueLight: "rgba(100, 122, 199, 0.1)",
       redLight: "#EE7979",
       gray100: "#1A181B",
       gray200: "#3E3A40",

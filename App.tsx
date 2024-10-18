@@ -1,4 +1,4 @@
-import { View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 import {
   useFonts,
@@ -7,14 +7,7 @@ import {
   Karla_300Light,
 } from "@expo-google-fonts/karla"
 
-import {
-  GluestackUIProvider,
-  Text,
-  Center,
-  StatusBar,
-  SafeAreaView,
-  VStack,
-} from "@gluestack-ui/themed"
+import { GluestackUIProvider, StatusBar, VStack } from "@gluestack-ui/themed"
 import { config } from "./config/gluestack-ui.config"
 
 import { Routes } from "@routes/index"
@@ -30,12 +23,14 @@ export default function App() {
 
   return (
     <GluestackUIProvider config={config}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="$gray600"
-        translucent
-      />
-      <VStack flex={1}>{fontsLoaded ? <Routes /> : <Loading />}</VStack>
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="$gray600"
+          translucent
+        />
+        {fontsLoaded ? <Routes /> : <Loading />}
+      </SafeAreaView>
     </GluestackUIProvider>
   )
 }
