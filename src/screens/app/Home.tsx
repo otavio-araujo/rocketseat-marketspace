@@ -52,12 +52,12 @@ export function Home() {
     "dinheiro",
   ])
   const adsList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-  const [showModal, setShowModal] = useState(true)
+  const [showModal, setShowModal] = useState(false)
   const [isExchangeable, setIsExchangeable] = useState<boolean>(false)
   const ref = useRef(null)
 
   function handleGoToAdDetails() {
-    navigation.navigate("adDetail")
+    navigation.navigate("adDetails")
   }
 
   return (

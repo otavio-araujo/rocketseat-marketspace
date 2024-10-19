@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { HomeTabs } from "@routes/homeTabs.routes"
 import { UserAds } from "@screens/app/ads/UserAds"
 import { AdCreate } from "@screens/app/ads/AdCreate"
-import { AdDetail } from "@screens/app/ads/AdDetail"
+import { AdDetails } from "@screens/app/ads/AdDetails"
 import { AdPreview } from "@screens/app/ads/AdPreview"
 import { UserAdDetail } from "@screens/app/ads/UserAdDetail"
 
@@ -14,7 +14,7 @@ export type AppRoutes = {
   userAds: undefined
   logout: undefined
   adCreate: undefined
-  adDetail: undefined
+  adDetails: undefined
   adPreview: undefined
   userAdDetail: undefined
 }
@@ -33,7 +33,7 @@ export function AppRoutes() {
       <Screen name="homeTabs" component={HomeTabs} />
       <Screen name="userAds" component={UserAds} />
       <Screen name="adCreate" component={AdCreate} />
-      <Screen name="adDetail" component={AdDetail} />
+      <Screen name="adDetails" component={AdDetails} />
       <Screen name="adPreview" component={AdPreview} />
       <Screen name="userAdDetail" component={UserAdDetail} />
     </Navigator>

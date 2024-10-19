@@ -11,7 +11,7 @@ import { Button } from "@components/Button"
 import { TouchableOpacity } from "react-native"
 import { Header } from "@components/Header"
 
-export function AdDetail() {
+export function AdDetails() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const { tokens } = gluestackUIConfig
   function handleGoBack() {
