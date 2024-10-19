@@ -23,6 +23,7 @@ export function Button({
   return (
     <GluestackButton
       {...rest}
+      flex={1}
       p={"$3"}
       minHeight={"$11"}
       maxHeight={"$11"}
