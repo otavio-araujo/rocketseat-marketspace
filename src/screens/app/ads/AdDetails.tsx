@@ -1,14 +1,10 @@
 import { useNavigation } from "@react-navigation/native"
 
-import { HStack, Text } from "@gluestack-ui/themed"
+import { HStack } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
-import ArrowLeft from "phosphor-react-native/src/icons/ArrowLeft"
-
-import { Button } from "@components/Button"
-import { TouchableOpacity } from "react-native"
 import { Header } from "@components/Header"
 
 export function AdDetails() {
