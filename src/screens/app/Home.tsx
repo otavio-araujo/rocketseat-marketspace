@@ -56,10 +56,14 @@ export function Home() {
   const [isExchangeable, setIsExchangeable] = useState<boolean>(false)
   const ref = useRef(null)
 
+  function handleGoToAdDetails() {
+    navigation.navigate("adDetail")
+  }
+
   return (
     <VStack flex={1} px={"$8"} pt={"$8"}>
       {/* Header */}
-      <HStack justifyContent="space-between" alignItems="center">
+      <HStack justifyContent="space-between" alignItems="center" gap={"$3"}>
         <HStack gap={"$2"} alignItems="center">
           <Avatar />
           <VStack>
@@ -165,7 +169,7 @@ export function Home() {
       <FlatList
         data={adsList}
         keyExtractor={(item) => String(item)}
-        renderItem={({ item }) => <ProductCard />}
+        renderItem={({ item }) => <ProductCard onPress={handleGoToAdDetails} />}
         contentContainerStyle={{
           paddingBottom: 68,
           width: "100%",
