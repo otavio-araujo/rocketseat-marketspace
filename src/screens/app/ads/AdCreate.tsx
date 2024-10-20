@@ -37,7 +37,7 @@ export function AdCreate() {
   const [isExchangeable, setIsExchangeable] = useState(false)
   const [payments, setPayments] = useState([])
 
-  function handleAdPreview() {
+  function handleGoToAdPreview() {
     navigation.navigate("adPreview")
   }
   function handleGoBack() {
@@ -223,7 +223,13 @@ export function AdCreate() {
           onPress={handleGoBack}
         />
 
-        <Button buttonVariant="dark" label="Avançar" mt={"$6"} flex={1} />
+        <Button
+          buttonVariant="dark"
+          label="Avançar"
+          mt={"$6"}
+          flex={1}
+          onPress={handleGoToAdPreview}
+        />
       </HStack>
     </VStack>
   )
