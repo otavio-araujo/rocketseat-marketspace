@@ -36,8 +36,8 @@ export function Selectbox() {
             <SelectDragIndicator />
           </SelectDragIndicatorWrapper>
           <SelectItem label="Todos" value="todos" />
-          <SelectItem label="Novos" value="novos" />
-          <SelectItem label="Usados" value="usados" />
+          <SelectItem label="Ativos" value="ativos" />
+          <SelectItem label="Desativados" value="desativados" />
         </SelectContent>
       </SelectPortal>
     </GluestackSelect>

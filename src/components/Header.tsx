@@ -51,7 +51,10 @@ export function Header({
         </View>
       )}
 
-      <TouchableOpacity {...rest} onPress={handleEditAd}>
+      <TouchableOpacity
+        {...rest}
+        onPress={headerVariant === "userAds" ? handleCreateAd : handleEditAd}
+      >
         {headerVariant === "userAds" ? (
           <Plus size={24} color={tokens.colors.gray100} />
         ) : (

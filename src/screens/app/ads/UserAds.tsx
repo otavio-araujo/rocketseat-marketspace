@@ -1,6 +1,5 @@
-import { Center, FlatList, HStack, Text, VStack } from "@gluestack-ui/themed"
+import { FlatList, HStack, Text, VStack } from "@gluestack-ui/themed"
 
-import { Button } from "@components/Button"
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 import { useNavigation } from "@react-navigation/native"
 import { Header } from "@components/Header"
@@ -15,16 +14,21 @@ export function UserAds() {
     navigation.navigate("userAdDetail")
   }
 
-  function handleAdCreate() {
+  function handleGoToAdCreate() {
     navigation.navigate("adCreate")
   }
 
   function handleGoBack() {
     navigation.goBack()
   }
+
   return (
     <VStack flex={1} px={"$6"} gap={"$4"} pt={"$5"}>
-      <Header title="Meus anúncios" headerVariant="userAds" />
+      <Header
+        title="Meus anúncios"
+        headerVariant="userAds"
+        handleCreateAd={handleGoToAdCreate}
+      />
 
       <HStack
         mt={"$8"}
@@ -58,17 +62,6 @@ export function UserAds() {
         showsVerticalScrollIndicator={false}
       />
       {/* End - Ads List */}
-
-      {/* <Text fontFamily={"$body"} fontSize={"$lg"}>
-        UserAds
-      </Text>
-      <Button label="Criar anúncio" onPress={handleAdCreate} width={"$full"} />
-      <Button
-        label="Detalhes do anúncio"
-        onPress={handleUserAdDetail}
-        width={"$full"}
-      />
-      <Button label="Voltar" onPress={handleGoBack} width={"$full"} /> */}
     </VStack>
   )
 }
