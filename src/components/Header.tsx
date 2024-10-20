@@ -1,7 +1,7 @@
 import { TouchableOpacity, TouchableOpacityProps } from "react-native"
 
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"
-import { HStack, Text } from "@gluestack-ui/themed"
+import { HStack, Text, View } from "@gluestack-ui/themed"
 
 import ArrowLeft from "phosphor-react-native/src/icons/ArrowLeft"
 import Plus from "phosphor-react-native/src/icons/Plus"
@@ -26,7 +26,6 @@ export function Header({
     <HStack
       alignItems="center"
       justifyContent="space-between"
-      flex={1}
       minHeight={26}
       maxHeight={26}
       px={"$6"}
@@ -38,16 +37,18 @@ export function Header({
       )}
 
       {headerVariant !== "simple" && headerVariant !== "adDetails" && (
-        <Text
-          flex={1}
-          fontFamily={"$heading"}
-          fontSize={"$lg"}
-          textAlign="center"
-          ml={headerVariant === "userAds" ? "$6" : "$0"}
-          mr={headerVariant === "create" ? "$6" : "$0"}
-        >
-          {title}
-        </Text>
+        <View flex={1}>
+          <Text
+            fontFamily={"$heading"}
+            fontSize={"$lg"}
+            textAlign="center"
+            color="$gray100"
+            ml={headerVariant === "userAds" ? "$6" : "$0"}
+            mr={headerVariant === "create" ? "$6" : "$0"}
+          >
+            {title}
+          </Text>
+        </View>
       )}
 
       <TouchableOpacity {...rest} onPress={handleEditAd}>

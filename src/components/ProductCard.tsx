@@ -6,10 +6,15 @@ import { Avatar } from "./Avatar"
 import { Badge } from "./Badge"
 
 type Props = TouchableOpacityProps & {
+  hasAvatar?: boolean
   handleOnClick?: () => void
 }
 
-export function ProductCard({ handleOnClick, ...rest }: Props) {
+export function ProductCard({
+  hasAvatar = false,
+  handleOnClick,
+  ...rest
+}: Props) {
   const image =
     "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   return (
@@ -28,12 +33,12 @@ export function ProductCard({ handleOnClick, ...rest }: Props) {
         <HStack
           width={"$full"}
           position="absolute"
-          justifyContent="space-between"
+          justifyContent={hasAvatar ? "space-between" : "flex-end"}
           top={4}
           right={0}
           px={"$1"}
         >
-          <Avatar isCardAd />
+          {hasAvatar && <Avatar isCardAd />}
           <Badge label="usado" badgeVariant="dark" />
         </HStack>
         <Text

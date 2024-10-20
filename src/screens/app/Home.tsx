@@ -60,6 +60,10 @@ export function Home() {
     navigation.navigate("adDetails")
   }
 
+  function handleGoToUserAds() {
+    navigation.navigate("userAds")
+  }
+
   return (
     <VStack flex={1} px={"$8"} pt={"$8"}>
       {/* Header */}
@@ -109,7 +113,12 @@ export function Home() {
             </VStack>
           </HStack>
           <GluestackButton variant="link">
-            <ButtonText fontFamily="$heading" fontSize="$xs" color="$blue">
+            <ButtonText
+              fontFamily="$heading"
+              fontSize="$xs"
+              color="$blue"
+              onPress={handleGoToUserAds}
+            >
               Meus anúncios
             </ButtonText>
             <ButtonIcon as={ArrowRight} size="xs" color="$blue" ml="$1" />
@@ -169,7 +178,9 @@ export function Home() {
       <FlatList
         data={adsList}
         keyExtractor={(item) => String(item)}
-        renderItem={({ item }) => <ProductCard onPress={handleGoToAdDetails} />}
+        renderItem={({ item }) => (
+          <ProductCard onPress={handleGoToAdDetails} hasAvatar />
+        )}
         contentContainerStyle={{
           paddingBottom: 68,
           width: "100%",
