@@ -23,7 +23,14 @@ export function Header({
 }: Props) {
   const { tokens } = gluestackUIConfig
   return (
-    <HStack alignItems="center" justifyContent="space-between" flex={1}>
+    <HStack
+      alignItems="center"
+      justifyContent="space-between"
+      flex={1}
+      minHeight={26}
+      maxHeight={26}
+      px={"$6"}
+    >
       {headerVariant !== "userAds" && (
         <TouchableOpacity {...rest}>
           <ArrowLeft size={24} color={tokens.colors.gray100} />

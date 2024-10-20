@@ -31,6 +31,8 @@ export const gluestackUIConfig = createConfig({
       blue: "#364D9D",
       blueLight: "#647AC7",
       bgBlueLight: "rgba(100, 122, 199, 0.1)",
+      inactiveCarousel: "rgba(247, 247, 248, 0.5)",
+      activeCarousel: "rgba(247, 247, 248, 0.75)",
       redLight: "#EE7979",
       gray100: "#1A181B",
       gray200: "#3E3A40",

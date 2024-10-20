@@ -15,12 +15,14 @@ type Props = ComponentProps<typeof GluestackAvatar> & {
   imageSource?: string
   isEditable?: boolean
   isCardAd?: boolean
+  isWelcomeAvatar?: boolean
   handleAvatar?: () => void
 }
 
 export function Avatar({
   isEditable = false,
   isCardAd = false,
+  isWelcomeAvatar = false,
   imageSource,
   handleAvatar,
   ...rest
@@ -33,12 +35,20 @@ export function Avatar({
       justifyContent="center"
       alignItems="center"
       bgColor="$gray500"
-      minHeight={isEditable ? "$22" : isCardAd ? "$8" : "$14"}
-      maxHeight={isEditable ? "$22" : isCardAd ? "$8" : "$14"}
-      minWidth={isEditable ? "$22" : isCardAd ? "$8" : "$14"}
-      maxWidth={isEditable ? "$22" : isCardAd ? "$8" : "$14"}
+      minHeight={
+        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$6"
+      }
+      maxHeight={
+        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$6"
+      }
+      minWidth={
+        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$6"
+      }
+      maxWidth={
+        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$6"
+      }
       style={{
-        borderWidth: isEditable ? 3 : isCardAd ? 1 : 2,
+        borderWidth: isEditable ? 3 : isCardAd || isWelcomeAvatar ? 1 : 2,
       }}
       {...rest}
     >

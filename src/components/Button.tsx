@@ -4,7 +4,6 @@ import {
   ButtonText,
   ButtonIcon,
 } from "@gluestack-ui/themed"
-import { IconProps } from "phosphor-react-native"
 
 type Props = ComponentProps<typeof GluestackButton> & {
   label: string

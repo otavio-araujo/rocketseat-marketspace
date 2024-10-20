@@ -1,4 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 import {
   useFonts,
@@ -23,14 +24,16 @@ export default function App() {
 
   return (
     <GluestackUIProvider config={config}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor="$gray600"
-          translucent
-        />
-        {fontsLoaded ? <Routes /> : <Loading />}
-      </SafeAreaView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <StatusBar
+            barStyle="dark-content"
+            backgroundColor="$gray600"
+            translucent
+          />
+          {fontsLoaded ? <Routes /> : <Loading />}
+        </SafeAreaView>
+      </GestureHandlerRootView>
     </GluestackUIProvider>
   )
 }

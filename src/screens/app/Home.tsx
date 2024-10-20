@@ -65,7 +65,7 @@ export function Home() {
       {/* Header */}
       <HStack justifyContent="space-between" alignItems="center" gap={"$3"}>
         <HStack gap={"$2"} alignItems="center">
-          <Avatar />
+          <Avatar isWelcomeAvatar />
           <VStack>
             <Text fontFamily={"$body"} fontSize={"$md"}>
               Boas vindas,

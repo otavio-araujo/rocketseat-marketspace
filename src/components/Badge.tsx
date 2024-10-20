@@ -1,10 +1,11 @@
-import { ViewProps } from "react-native"
+import { ComponentProps } from "react"
+
 import { HStack, Text, View } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 
 import XCircle from "phosphor-react-native/src/icons/XCircle"
 
-type BadgeProps = ViewProps & {
+type BadgeProps = ComponentProps<typeof View> & {
   label: string
   badgeVariant?: "primary" | "muted" | "dark" | "primaryLight"
   hasIcon?: boolean
@@ -20,7 +21,6 @@ export function Badge({
   return (
     <View
       {...rest}
-      flexShrink={0}
       backgroundColor={
         badgeVariant === "dark"
           ? "$gray200"
