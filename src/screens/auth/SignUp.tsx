@@ -54,13 +54,19 @@ export function SignUp() {
         <Input type="password" placeholder="Senha" />
         <Input type="password" placeholder="Confirmar senha" />
 
-        <Button label="Entrar" buttonVariant="dark" onPress={handleSignUp} />
+        <Button
+          label="Entrar"
+          buttonVariant="dark"
+          onPress={handleSignUp}
+          width={"$full"}
+        />
 
-        <Center w={"$full"}>
+        <Center w={"$full"} gap={"$2"}>
           <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
             Já tem uma conta?
           </Text>
           <Button
+            width={"$full"}
             label="Ir para o login"
             buttonVariant="muted"
             onPress={handleGoBack}

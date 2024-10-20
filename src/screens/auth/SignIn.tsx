@@ -46,6 +46,7 @@ export function SignIn() {
           <Input type="password" placeholder="Senha" />
 
           <Button
+            width={"$full"}
             label="Entrar"
             buttonVariant="primary"
             onPress={handleSignIn}
@@ -60,6 +61,7 @@ export function SignIn() {
           </Text>
 
           <Button
+            width={"$full"}
             label="Criar uma conta"
             buttonVariant="muted"
             onPress={handleSignUp}
