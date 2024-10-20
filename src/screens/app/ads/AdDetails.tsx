@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 
 import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
@@ -25,8 +26,9 @@ export type AdDetails = {
 
 export function AdDetails() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
-
   const { tokens } = gluestackUIConfig
+
+  const [isActive, setIsActive] = useState(true)
 
   const images: AdDetails[] = [
     {
@@ -59,7 +61,7 @@ export function AdDetails() {
         title="Criar anúncio"
       />
 
-      <ProductCarousel data={images} mt={"$3"} />
+      <ProductCarousel data={images} mt={"$3"} isActive={isActive} />
 
       <VStack w={"$full"} px={"$6"} mt={"$5"} pb={"$7"} gap={"$6"}>
         <HStack alignItems="center">
@@ -141,7 +143,21 @@ export function AdDetails() {
         </VStack>
 
         <VStack w={"$full"} gap={"$2"}>
-          <Button label="Desativar anúncio" buttonVariant="dark" icon={Power} />
+          {isActive ? (
+            <Button
+              label="Desativar anúncio"
+              buttonVariant="dark"
+              icon={Power}
+              onPress={() => setIsActive(false)}
+            />
+          ) : (
+            <Button
+              label="Reativar anúncio"
+              buttonVariant="primary"
+              icon={Power}
+              onPress={() => setIsActive(true)}
+            />
+          )}
           <Button
             label="Excluir anúncio"
             buttonVariant="muted"
