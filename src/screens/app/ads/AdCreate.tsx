@@ -25,7 +25,11 @@ export function AdCreate() {
   return (
     <VStack flex={1} gap={"$4"} pt={"$5"}>
       {/* Header */}
-      <Header title="Criar anúncio" headerVariant="create" />
+      <Header
+        title="Criar anúncio"
+        headerVariant="create"
+        onPress={handleGoBack}
+      />
       {/* End - Header */}
 
       <VStack mt={"$6"} px={"$6"} gap={"$8"}>

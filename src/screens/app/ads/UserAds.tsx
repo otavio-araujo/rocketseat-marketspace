@@ -23,7 +23,7 @@ export function UserAds() {
   }
 
   return (
-    <VStack flex={1} px={"$6"} gap={"$4"} pt={"$5"}>
+    <VStack flex={1} gap={"$4"} pt={"$5"}>
       <Header
         title="Meus anúncios"
         headerVariant="userAds"
@@ -49,6 +49,7 @@ export function UserAds() {
         )}
         contentContainerStyle={{
           paddingBottom: 68,
+          paddingHorizontal: 24,
           width: "100%",
           gap: 24,
           marginTop: 20,
