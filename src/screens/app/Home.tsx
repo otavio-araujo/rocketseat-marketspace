@@ -60,6 +60,10 @@ export function Home() {
     navigation.navigate("adDetails")
   }
 
+  function handleGoToAdCreate() {
+    navigation.navigate("adCreate")
+  }
+
   function handleGoToUserAds() {
     navigation.navigate("userAds")
   }
@@ -79,7 +83,12 @@ export function Home() {
             </Text>
           </VStack>
         </HStack>
-        <Button label="Criar anúncio" buttonVariant="dark" icon={Plus} />
+        <Button
+          label="Criar anúncio"
+          buttonVariant="dark"
+          icon={Plus}
+          onPress={handleGoToAdCreate}
+        />
       </HStack>
       {/* End - Header */}
 

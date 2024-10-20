@@ -48,7 +48,6 @@ export function Textarea({
           fontSize={"$md"}
           color={"$gray200"}
           placeholderTextColor={"$gray400"}
-          placeholder="Descrição do produto"
         />
       </GluestackTextarea>
 
