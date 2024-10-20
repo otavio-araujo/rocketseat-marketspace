@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 
 import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
-import { VStack, Text, HStack } from "@gluestack-ui/themed"
+import { VStack, Text, HStack, ScrollView } from "@gluestack-ui/themed"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -12,11 +12,12 @@ import { Button } from "@components/Button"
 import { Header } from "@components/Header"
 import { ProductCarousel } from "@components/ProductCarousel"
 
-import Barcode from "phosphor-react-native/src/icons/Barcode"
-import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Bank from "phosphor-react-native/src/icons/Bank"
-import Power from "phosphor-react-native/src/icons/Power"
-import TrashSimple from "phosphor-react-native/src/icons/TrashSimple"
+import QrCode from "phosphor-react-native/src/icons/QrCode"
+import Barcode from "phosphor-react-native/src/icons/Barcode"
+import Money from "phosphor-react-native/src/icons/Money"
+import CreditCard from "phosphor-react-native/src/icons/CreditCard"
+import WhatsappLogo from "phosphor-react-native/src/icons/WhatsappLogo"
 
 export type AdDetails = {
   id: number
@@ -27,8 +28,6 @@ export type AdDetails = {
 export function AdDetails() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const { tokens } = gluestackUIConfig
-
-  const [isActive, setIsActive] = useState(true)
 
   const images: AdDetails[] = [
     {
@@ -52,7 +51,7 @@ export function AdDetails() {
     navigation.goBack()
   }
   return (
-    <VStack mt={"$4"}>
+    <VStack mt={"$4"} flex={1}>
       <Header
         handleCreateAd={() => {}}
         handleEditAd={() => {}}
@@ -61,110 +60,152 @@ export function AdDetails() {
         title="Criar anúncio"
       />
 
-      <ProductCarousel data={images} mt={"$3"} isActive={isActive} />
-
-      <VStack w={"$full"} px={"$6"} mt={"$5"} pb={"$7"} gap={"$6"}>
-        <HStack alignItems="center">
-          <Avatar imageSource="https://i.pravatar.cc/300" />
-          <Text fontFamily={"$body"} fontSize={"$sm"} ml={"$2"}>
-            Maria Gomes{" "}
-          </Text>
-        </HStack>
-
-        <VStack alignItems="flex-start" gap={"$2"}>
-          <HStack>
-            <Badge badgeVariant="muted" label="usado" mx={"auto"} />
+      <ProductCarousel data={images} mt={"$3"} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <VStack w={"$full"} px={"$6"} mt={"$5"} gap={"$6"}>
+          <HStack alignItems="center">
+            <Avatar imageSource="https://i.pravatar.cc/300" />
+            <Text fontFamily={"$body"} fontSize={"$sm"} ml={"$2"}>
+              Maria Gomes{" "}
+            </Text>
           </HStack>
 
-          <HStack
-            w={"$full"}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
-              Luminária pendente
-            </Text>
-            <HStack alignItems="baseline">
-              <Text
-                fontFamily={"$heading"}
-                fontSize={"$sm"}
-                color={"$blueLight"}
-              >
-                R${" "}
+          <VStack alignItems="flex-start" gap={"$2"}>
+            <HStack>
+              <Badge badgeVariant="muted" label="usado" mx={"auto"} />
+            </HStack>
+
+            <HStack
+              w={"$full"}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
+                Luminária pendente
               </Text>
+              <HStack alignItems="baseline">
+                <Text
+                  fontFamily={"$heading"}
+                  fontSize={"$sm"}
+                  color={"$blueLight"}
+                >
+                  R${" "}
+                </Text>
+                <Text
+                  fontFamily={"$heading"}
+                  fontSize={"$lg"}
+                  color={"$blueLight"}
+                >
+                  45,00
+                </Text>
+              </HStack>
+            </HStack>
+
+            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
+              Cras congue cursus in tortor sagittis placerat nunc, tellus arcu.
+              Vitae ante leo eget maecenas urna mattis cursus.
+            </Text>
+          </VStack>
+
+          <HStack w={"$full"} gap={"$2"}>
+            <Text fontFamily={"$heading"} fontSize={"$sm"} color={"$gray200"}>
+              Aceita troca?
+            </Text>
+            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
+              Não
+            </Text>
+          </HStack>
+
+          <VStack w={"$full"} gap={"$2"}>
+            <Text fontFamily={"$heading"} fontSize={"$sm"} color={"$gray200"}>
+              Meios de pagamento:{" "}
+            </Text>
+
+            <HStack w={"$full"} gap={"$2"}>
+              <Barcode size={18} color={tokens.colors.gray100} />
               <Text
-                fontFamily={"$heading"}
-                fontSize={"$lg"}
-                color={"$blueLight"}
+                textTransform="capitalize"
+                fontFamily={"$body"}
+                fontSize={"$sm"}
+                color={"$gray200"}
               >
-                45,00
+                Boleto
               </Text>
             </HStack>
-          </HStack>
-
-          <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-            Cras congue cursus in tortor sagittis placerat nunc, tellus arcu.
-            Vitae ante leo eget maecenas urna mattis cursus.
-          </Text>
+            <HStack w={"$full"} gap={"$2"}>
+              <QrCode size={18} color={tokens.colors.gray100} />
+              <Text
+                textTransform="capitalize"
+                fontFamily={"$body"}
+                fontSize={"$sm"}
+                color={"$gray200"}
+              >
+                Pix
+              </Text>
+            </HStack>
+            <HStack w={"$full"} gap={"$2"}>
+              <Money size={18} color={tokens.colors.gray100} />
+              <Text
+                textTransform="capitalize"
+                fontFamily={"$body"}
+                fontSize={"$sm"}
+                color={"$gray200"}
+              >
+                Dinheiro
+              </Text>
+            </HStack>
+            <HStack w={"$full"} gap={"$2"}>
+              <CreditCard size={18} color={tokens.colors.gray100} />
+              <Text
+                textTransform="capitalize"
+                fontFamily={"$body"}
+                fontSize={"$sm"}
+                color={"$gray200"}
+              >
+                Caratão de Crédito
+              </Text>
+            </HStack>
+            <HStack w={"$full"} gap={"$2"}>
+              <Bank size={18} color={tokens.colors.gray100} />
+              <Text
+                textTransform="capitalize"
+                fontFamily={"$body"}
+                fontSize={"$sm"}
+                color={"$gray200"}
+              >
+                Depósito Bancário
+              </Text>
+            </HStack>
+          </VStack>
         </VStack>
+      </ScrollView>
 
-        <HStack w={"$full"} gap={"$2"}>
-          <Text fontFamily={"$heading"} fontSize={"$sm"} color={"$gray200"}>
-            Aceita troca?
+      <HStack
+        w={"$full"}
+        px={"$6"}
+        mt={"$5"}
+        pb={"$7"}
+        bg={"$gray700"}
+        h={"$24"}
+        gap={"$15"}
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <HStack alignItems="baseline" mt={"$6"}>
+          <Text fontFamily="$heading" fontSize={"$md"} color={"$blue"}>
+            R${" "}
           </Text>
-          <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-            Não
+          <Text fontFamily="$heading" fontSize={"$xl"} color={"$blue"}>
+            45,00
           </Text>
         </HStack>
-
-        <VStack w={"$full"} gap={"$2"}>
-          <Text fontFamily={"$heading"} fontSize={"$sm"} color={"$gray200"}>
-            Meios de pagamento:{" "}
-          </Text>
-
-          <HStack w={"$full"} gap={"$2"}>
-            <Barcode size={18} color={tokens.colors.gray100} />
-            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Boleto
-            </Text>
-          </HStack>
-          <HStack w={"$full"} gap={"$2"}>
-            <QrCode size={18} color={tokens.colors.gray100} />
-            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Pix
-            </Text>
-          </HStack>
-          <HStack w={"$full"} gap={"$2"}>
-            <Bank size={18} color={tokens.colors.gray100} />
-            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Depósito Bancário
-            </Text>
-          </HStack>
-        </VStack>
-
-        <VStack w={"$full"} gap={"$2"}>
-          {isActive ? (
-            <Button
-              label="Desativar anúncio"
-              buttonVariant="dark"
-              icon={Power}
-              onPress={() => setIsActive(false)}
-            />
-          ) : (
-            <Button
-              label="Reativar anúncio"
-              buttonVariant="primary"
-              icon={Power}
-              onPress={() => setIsActive(true)}
-            />
-          )}
-          <Button
-            label="Excluir anúncio"
-            buttonVariant="muted"
-            icon={TrashSimple}
-          />
-        </VStack>
-      </VStack>
+        <Button
+          buttonVariant="primary"
+          label="Entrar em contato"
+          icon={WhatsappLogo}
+          mt={"$6"}
+        />
+      </HStack>
     </VStack>
   )
 }
