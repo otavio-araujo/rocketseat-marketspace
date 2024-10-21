@@ -5,9 +5,12 @@ import { useNavigation } from "@react-navigation/native"
 import { Header } from "@components/Header"
 import { Selectbox } from "@components/Selectbox"
 import { ProductCard } from "@components/ProductCard"
+import { useEffect, useState } from "react"
 
 export function UserAds() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+  const adStatuses = ["todos", "ativos", "desativados"]
+  const [adStatus, setAdStatus] = useState("todos")
 
   const adsList = [1, 2, 3, 4, 5]
   function handleUserAdDetail() {
@@ -22,14 +25,19 @@ export function UserAds() {
     navigation.goBack()
   }
 
+  useEffect(() => {
+    console.log(adStatus)
+  }, [adStatus])
+
   return (
+    /* Container */
     <VStack flex={1} gap={"$4"} pt={"$5"}>
       <Header
         title="Meus anúncios"
         headerVariant="userAds"
         handleCreateAd={handleGoToAdCreate}
       />
-
+      {/* Ads and Filter */}
       <HStack
         mt={"$8"}
         justifyContent="space-between"
@@ -37,8 +45,13 @@ export function UserAds() {
         px={"$6"}
       >
         <Text flex={1}>9 anúncios</Text>
-        <Selectbox />
+        <Selectbox
+          selectedValue="todos"
+          values={adStatuses}
+          onValueChange={(value) => setAdStatus(value)}
+        />
       </HStack>
+      {/* End - Ads and Filter */}
 
       {/* Ads List */}
       <FlatList
@@ -64,5 +77,6 @@ export function UserAds() {
       />
       {/* End - Ads List */}
     </VStack>
+    /* End - Container */
   )
 }

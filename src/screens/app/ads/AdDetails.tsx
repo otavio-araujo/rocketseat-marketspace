@@ -1,8 +1,7 @@
-import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 
-import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 import { VStack, Text, HStack, ScrollView } from "@gluestack-ui/themed"
+import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -13,9 +12,9 @@ import { Header } from "@components/Header"
 import { ProductCarousel } from "@components/ProductCarousel"
 
 import Bank from "phosphor-react-native/src/icons/Bank"
+import Money from "phosphor-react-native/src/icons/Money"
 import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Barcode from "phosphor-react-native/src/icons/Barcode"
-import Money from "phosphor-react-native/src/icons/Money"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
 import WhatsappLogo from "phosphor-react-native/src/icons/WhatsappLogo"
 
@@ -51,6 +50,7 @@ export function AdDetails() {
     navigation.goBack()
   }
   return (
+    /* Container */
     <VStack mt={"$4"} flex={1}>
       <Header
         handleCreateAd={() => {}}
@@ -61,6 +61,8 @@ export function AdDetails() {
       />
 
       <ProductCarousel data={images} mt={"$3"} />
+
+      {/* Content */}
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack w={"$full"} px={"$6"} mt={"$5"} gap={"$6"}>
           <HStack alignItems="center">
@@ -179,7 +181,9 @@ export function AdDetails() {
           </VStack>
         </VStack>
       </ScrollView>
+      {/* End - Content */}
 
+      {/* Footer */}
       <HStack
         w={"$full"}
         px={"$6"}
@@ -206,6 +210,8 @@ export function AdDetails() {
           mt={"$6"}
         />
       </HStack>
+      {/* End - Footer */}
     </VStack>
+    /* End - Container */
   )
 }

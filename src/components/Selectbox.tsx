@@ -13,18 +13,28 @@ import { Select as GluestackSelect } from "@gluestack-ui/themed"
 import CaretDown from "phosphor-react-native/src/icons/CaretDown"
 
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"
+import { ComponentProps } from "react"
 
-export function Selectbox() {
+type SelectboxProps = ComponentProps<typeof GluestackSelect> & {
+  selectedValue: string
+  values: string[]
+}
+
+export function Selectbox({ selectedValue, values, ...rest }: SelectboxProps) {
   const { tokens } = gluestackUIConfig
   return (
-    <GluestackSelect flex={1} selectedValue={"Todos"}>
+    <GluestackSelect flex={1} selectedValue={selectedValue} {...rest}>
       <SelectTrigger
         variant="outline"
         size="md"
         borderColor={"$gray500"}
         pr={"$3"}
       >
-        <SelectInput placeholder="Selecione uma opção" />
+        <SelectInput
+          fontFamily={"$body"}
+          textTransform="capitalize"
+          placeholder="Selecione uma opção"
+        />
         <SelectIcon>
           <CaretDown size={16} color={tokens.colors.gray300} />
         </SelectIcon>
@@ -35,9 +45,12 @@ export function Selectbox() {
           <SelectDragIndicatorWrapper>
             <SelectDragIndicator />
           </SelectDragIndicatorWrapper>
-          <SelectItem label="Todos" value="todos" />
+          {values.map((value) => (
+            <SelectItem key={value} label={value} value={value} />
+          ))}
+          {/* <SelectItem label="Todos" value="todos" />
           <SelectItem label="Ativos" value="ativos" />
-          <SelectItem label="Desativados" value="desativados" />
+          <SelectItem label="Desativados" value="desativados" /> */}
         </SelectContent>
       </SelectPortal>
     </GluestackSelect>

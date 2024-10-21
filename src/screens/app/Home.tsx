@@ -4,9 +4,9 @@ import { useNavigation } from "@react-navigation/native"
 import {
   Icon,
   Text,
-  Switch,
-  HStack,
   VStack,
+  HStack,
+  Switch,
   ButtonText,
   ButtonIcon,
   Button as GluestackButton,
@@ -35,10 +35,10 @@ import MagnifyingGlass from "phosphor-react-native/src/icons/MagnifyingGlass"
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
 import { Badge } from "@components/Badge"
-import { Button } from "@components/Button"
 import { Avatar } from "@components/Avatar"
-import { ProductCard } from "@components/ProductCard"
+import { Button } from "@components/Button"
 import { Checkbox } from "@components/Checkbox"
+import { ProductCard } from "@components/ProductCard"
 
 export function Home() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
@@ -69,6 +69,7 @@ export function Home() {
   }
 
   return (
+    /* Container */
     <VStack flex={1} px={"$8"} pt={"$8"}>
       {/* Header */}
       <HStack justifyContent="space-between" alignItems="center" gap={"$3"}>
@@ -84,10 +85,10 @@ export function Home() {
           </VStack>
         </HStack>
         <Button
+          onPress={handleGoToAdCreate}
           label="Criar anúncio"
           buttonVariant="dark"
           icon={Plus}
-          onPress={handleGoToAdCreate}
         />
       </HStack>
       {/* End - Header */}
@@ -99,16 +100,16 @@ export function Home() {
         </Text>
 
         <HStack
+          justifyContent="space-between"
+          alignItems="center"
+          bg="$bgBlueLight"
+          minHeight={"$16"}
+          maxHeight={"$16"}
+          rounded="$md"
           mt={"$3"}
           py={"$3"}
           pl={"$4"}
           pr={"$5"}
-          bg="$bgBlueLight"
-          rounded="$md"
-          minHeight={"$16"}
-          maxHeight={"$16"}
-          alignItems="center"
-          justifyContent="space-between"
         >
           <HStack gap={"$4"} alignItems="center">
             <Tag size={tokens.space[6]} color={tokens.colors.blue} />
@@ -123,10 +124,10 @@ export function Home() {
           </HStack>
           <GluestackButton variant="link">
             <ButtonText
+              onPress={handleGoToUserAds}
               fontFamily="$heading"
               fontSize="$xs"
               color="$blue"
-              onPress={handleGoToUserAds}
             >
               Meus anúncios
             </ButtonText>
@@ -157,24 +158,24 @@ export function Home() {
             <InputField
               placeholderTextColor={"$gray400"}
               placeholder="Buscar anúncio"
+              fontFamily={"$body"}
               color="$gray200"
               fontSize={"$md"}
-              fontFamily={"$body"}
             />
           </Input>
           <HStack alignItems="center" gap={"$3"}>
             <TouchableOpacity onPress={() => {}}>
               <MagnifyingGlass
-                size={tokens.space[5]}
                 color={tokens.colors.gray200}
+                size={tokens.space[5]}
                 weight="bold"
               />
             </TouchableOpacity>
             <Divider orientation="vertical" bg="$gray400" h={18} w={1} />
             <TouchableOpacity onPress={() => setShowModal(true)} ref={ref}>
               <Sliders
-                size={tokens.space[5]}
                 color={tokens.colors.gray200}
+                size={tokens.space[5]}
                 weight="bold"
               />
             </TouchableOpacity>
@@ -190,18 +191,18 @@ export function Home() {
         renderItem={({ item }) => (
           <ProductCard onPress={handleGoToAdDetails} hasAvatar />
         )}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 68,
           width: "100%",
           gap: 24,
         }}
         columnWrapperStyle={{
-          flex: 1,
           justifyContent: "space-between",
+          flex: 1,
           gap: 20,
         }}
         numColumns={2}
-        showsVerticalScrollIndicator={false}
       />
       {/* End - Ads List */}
 
@@ -215,15 +216,15 @@ export function Home() {
       >
         <ModalBackdrop />
         <ModalContent
-          flex={1}
-          w={"$full"}
-          bottom={0}
-          position="absolute"
-          px={"$6"}
-          pt={"$12"}
-          pb={"$8"}
           borderTopLeftRadius={"$3xl"}
           borderTopRightRadius={"$3xl"}
+          position="absolute"
+          w={"$full"}
+          bottom={0}
+          pt={"$12"}
+          px={"$6"}
+          pb={"$8"}
+          flex={1}
         >
           <ModalHeader>
             <Text size="lg" fontFamily="$heading" color="$gray100">
@@ -250,17 +251,17 @@ export function Home() {
               </Text>
               <HStack
                 bg={isExchangeable ? "$blueLight" : "$gray500"}
+                minHeight={"$8"}
+                maxHeight={"$8"}
                 rounded="$full"
                 p={"$0"}
                 px={"$1"}
                 m={"$0"}
-                minHeight={"$8"}
-                maxHeight={"$8"}
               >
                 <Switch
+                  onChange={() => setIsExchangeable(!isExchangeable)}
                   p={"$0"}
                   m={"$0"}
-                  onChange={() => setIsExchangeable(!isExchangeable)}
                   sx={{
                     _light: {
                       props: {
@@ -314,5 +315,6 @@ export function Home() {
       </Modal>
       {/* End - Filter Modal */}
     </VStack>
+    /* End - Container */
   )
 }
