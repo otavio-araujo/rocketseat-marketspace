@@ -1,6 +1,16 @@
 import { useNavigation } from "@react-navigation/native"
 
-import { Center, Text, VStack } from "@gluestack-ui/themed"
+import { Controller, useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+
+import {
+  Center,
+  FormControlError,
+  FormControlErrorText,
+  Text,
+  VStack,
+} from "@gluestack-ui/themed"
 
 import Logo from "@assets/logo/logo.svg"
 import Marketspace from "@assets/logo/marketspace.svg"
@@ -10,13 +20,36 @@ import { Button } from "@components/Button"
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
 
+type FormData = {
+  email: string
+  password: string
+}
+
+const signInSchema = yup.object({
+  email: yup
+    .string()
+    .required("E-mail obrigatório.")
+    .email("E-mail inválido")
+    .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, "E-mail inválido"),
+  password: yup.string().required("Senha obrigatória."),
+})
+
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(signInSchema),
+  })
+
   function handleSignUp() {
     navigation.navigate("signUp")
   }
-  function handleSignIn() {
-    console.log("It logs in the User.")
+  function handleSignIn(data: FormData) {
+    console.log(data)
   }
   return (
     /* Container */
@@ -47,14 +80,41 @@ export function SignIn() {
             Acesse sua conta
           </Text>
 
-          <Input type="text" placeholder="E-mail" />
-          <Input type="password" placeholder="Senha" />
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                type="text"
+                placeholder="E-mail"
+                onChangeText={onChange}
+                value={value}
+                errorMessages={errors.email?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                type="password"
+                placeholder="Senha"
+                onChangeText={onChange}
+                value={value}
+                errorMessages={errors.password?.message}
+                onSubmitEditing={handleSubmit(handleSignIn)}
+                returnKeyType="send"
+              />
+            )}
+          />
 
           <Button
             width={"$full"}
             label="Entrar"
             buttonVariant="primary"
-            onPress={handleSignIn}
+            onPress={handleSubmit(handleSignIn)}
           />
         </Center>
         {/* End - Form */}

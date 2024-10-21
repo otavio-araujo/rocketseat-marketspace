@@ -81,10 +81,11 @@ export function Input({
           </InputSlot>
         )}
       </GluestackInput>
+
       <FormControlError>
         <FormControlErrorText
           color="$redLight"
-          fontFamily="$body"
+          fontFamily="$heading"
           fontSize={"$xs"}
           ml={"$2"}
         >
