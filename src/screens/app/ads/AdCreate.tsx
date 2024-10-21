@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { ScrollView, TouchableOpacity } from "react-native"
 import { useNavigation } from "@react-navigation/native"
+import { ScrollView, TouchableOpacity } from "react-native"
 
 import {
   Box,
@@ -45,10 +45,12 @@ export function AdCreate() {
   ]
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+
   const { tokens } = gluestackUIConfig
-  const [productCondition, setProductCondition] = useState("")
-  const [isExchangeable, setIsExchangeable] = useState(false)
+
   const [payments, setPayments] = useState([])
+  const [isExchangeable, setIsExchangeable] = useState(false)
+  const [productCondition, setProductCondition] = useState("")
 
   function handleGoToAdPreview() {
     navigation.navigate("adPreview")

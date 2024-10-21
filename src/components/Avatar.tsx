@@ -20,9 +20,9 @@ type Props = ComponentProps<typeof GluestackAvatar> & {
 }
 
 export function Avatar({
+  isWelcomeAvatar = false,
   isEditable = false,
   isCardAd = false,
-  isWelcomeAvatar = false,
   imageSource,
   handleAvatar,
   ...rest
@@ -65,11 +65,11 @@ export function Avatar({
 
       {isEditable && (
         <Fab
-          bg="$blueLight"
-          size="lg"
           style={{ position: "absolute", right: -16, bottom: -4 }}
           onPress={handleAvatar}
           $active-bg={"$blue"}
+          bg="$blueLight"
+          size="lg"
         >
           {/* ShoppingCartIcon is imported from 'lucide-react-native' */}
           <FabIcon as={PencilSimpleLine} h="$5" w="$5" color="$white" />

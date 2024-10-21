@@ -16,26 +16,26 @@ export function ProductPhoto({ photo, handleRemovePhoto }: Props) {
   const { tokens } = gluestackUIConfig
   return (
     <Box
-      w={100}
-      h={100}
+      justifyContent="center"
+      alignItems="center"
+      position="relative"
       bg={"$gray500"}
       rounded={"$md"}
-      alignItems="center"
-      justifyContent="center"
-      position="relative"
+      w={100}
+      h={100}
     >
       <TouchableOpacity
         style={{
-          position: "absolute",
-          top: 4,
-          right: 4,
-          width: 16,
-          height: 16,
           backgroundColor: tokens.colors.gray100,
-          zIndex: 1,
-          alignItems: "center",
           justifyContent: "center",
+          position: "absolute",
+          alignItems: "center",
           borderRadius: 9999,
+          height: 16,
+          width: 16,
+          zIndex: 1,
+          right: 4,
+          top: 4,
         }}
         onPress={handleRemovePhoto}
       >

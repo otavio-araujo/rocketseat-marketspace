@@ -12,9 +12,9 @@ type BadgeProps = ComponentProps<typeof View> & {
 }
 
 export function Badge({
-  label,
   badgeVariant = "muted",
   hasIcon = false,
+  label,
   ...rest
 }: BadgeProps) {
   const { tokens } = gluestackUIConfig
@@ -30,17 +30,14 @@ export function Badge({
           ? "$blue"
           : "$blueLight"
       }
-      px={"$2.5"}
-      height={"$6"}
-      rounded="$full"
-      alignItems="center"
       justifyContent="center"
+      alignItems="center"
+      rounded="$full"
+      height={"$6"}
+      px={"$2.5"}
     >
       <HStack alignItems="center" gap={"$1"} justifyContent="center">
         <Text
-          px={"$1"}
-          fontFamily={"$heading"}
-          fontSize={"$xxs"}
           color={
             badgeVariant === "muted"
               ? tokens.colors.gray200
@@ -49,19 +46,22 @@ export function Badge({
           style={{
             textTransform: "uppercase",
           }}
+          fontFamily={"$heading"}
+          fontSize={"$xxs"}
+          px={"$1"}
         >
           {label}
         </Text>
 
         {hasIcon && (
           <XCircle
-            size={16}
-            weight="fill"
             color={
               badgeVariant === "muted"
                 ? tokens.colors.gray200
                 : tokens.colors.white
             }
+            weight="fill"
+            size={16}
           />
         )}
       </HStack>

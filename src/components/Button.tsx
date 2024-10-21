@@ -6,17 +6,17 @@ import {
 } from "@gluestack-ui/themed"
 
 type Props = ComponentProps<typeof GluestackButton> & {
-  label: string
   buttonVariant?: "primary" | "muted" | "dark"
   isLoading?: boolean
+  label: string
   icon?: any
 }
 
 export function Button({
-  label,
   buttonVariant = "primary",
-  icon = false,
   isLoading = false,
+  icon = false,
+  label,
   ...rest
 }: Props) {
   return (
