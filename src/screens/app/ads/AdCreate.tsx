@@ -1,3 +1,5 @@
+import { useState } from "react"
+import { ScrollView, TouchableOpacity } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 
 import {
@@ -18,19 +20,30 @@ import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
-import { Header } from "@components/Header"
-
 import Plus from "phosphor-react-native/src/regular/Plus"
-import Circle from "phosphor-react-native/src/regular/Circle"
 
-import { ScrollView, TouchableOpacity } from "react-native"
 import { Input } from "@components/Input"
-import { Textarea } from "@components/Textarea"
-import { useState } from "react"
 import { Button } from "@components/Button"
+import { Header } from "@components/Header"
+import { Textarea } from "@components/Textarea"
 import { Checkbox } from "@components/Checkbox"
+import { ProductPhoto } from "@components/ProductPhoto"
+
+export type ProductPhotoProps = {
+  id: number
+  uri: string
+  title: string
+}
 
 export function AdCreate() {
+  const images: ProductPhotoProps[] = [
+    {
+      id: 0,
+      uri: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "HeadPhones",
+    }, // https://unsplash.com/photos/Jup6QMQdLnM
+  ]
+
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const { tokens } = gluestackUIConfig
   const [productCondition, setProductCondition] = useState("")
@@ -71,18 +84,24 @@ export function AdCreate() {
             </Text>
 
             <HStack mt={"$4"} gap={"$2"}>
-              <TouchableOpacity>
-                <Box
-                  w={100}
-                  h={100}
-                  bg={"$gray500"}
-                  rounded={"$md"}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Plus size={24} color={tokens.colors.gray400} />
-                </Box>
-              </TouchableOpacity>
+              {images.map((image) => (
+                <ProductPhoto photo={image} key={image.id} />
+              ))}
+
+              {images.length < 3 && (
+                <TouchableOpacity>
+                  <Box
+                    w={100}
+                    h={100}
+                    bg={"$gray500"}
+                    rounded={"$md"}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Plus size={24} color={tokens.colors.gray400} />
+                  </Box>
+                </TouchableOpacity>
+              )}
             </HStack>
           </VStack>
           {/* End - Product Photos */}
@@ -140,7 +159,11 @@ export function AdCreate() {
               Vendas
             </Text>
 
-            <Input placeholder="Valor do produto" />
+            <Input
+              placeholder="Valor do produto"
+              inputVariant="money"
+              keyboardType="numeric"
+            />
 
             <VStack gap={"$3"}>
               <Text fontFamily={"$heading"} fontSize={"$md"} color={"$gray200"}>

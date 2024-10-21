@@ -11,11 +11,13 @@ import {
   EyeIcon,
   EyeOffIcon,
 } from "@gluestack-ui/themed"
+import { Text } from "@gluestack-ui/themed"
 
 type Props = ComponentProps<typeof InputField> & {
   errorMessages?: string | null
   isInvalid?: boolean
   isReadOnly?: boolean
+  inputVariant?: "money" | "normal"
 }
 
 export function Input({
@@ -23,6 +25,7 @@ export function Input({
   type = "text",
   isInvalid = false,
   errorMessages = null,
+  inputVariant = "normal",
   ...rest
 }: Props) {
   const invalid = !!errorMessages || isInvalid
@@ -53,6 +56,13 @@ export function Input({
         $invalid={{ borderWidth: 1, borderColor: "$redLight" }}
         opacity={isReadOnly ? 0.5 : 1}
       >
+        {inputVariant === "money" && (
+          <InputSlot>
+            <Text fontFamily="$body" fontSize="$md" color="$gray100">
+              R$
+            </Text>
+          </InputSlot>
+        )}
         <InputField
           {...rest}
           type={type === "password" && !showPassword ? "password" : "text"}
