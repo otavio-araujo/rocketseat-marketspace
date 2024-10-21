@@ -25,10 +25,6 @@ export function UserAds() {
     navigation.goBack()
   }
 
-  useEffect(() => {
-    console.log(adStatus)
-  }, [adStatus])
-
   return (
     /* Container */
     <VStack flex={1} gap={"$4"} pt={"$5"}>
