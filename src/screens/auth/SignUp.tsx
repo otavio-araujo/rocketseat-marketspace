@@ -23,7 +23,9 @@ export function SignUp() {
     console.log("It changes the Avatar")
   }
   return (
+    /* Container */
     <VStack flex={1} bg={"$gray600"} pt={"$16"} px={"$12"} pb={"$8"}>
+      {/* Welcome Message */}
       <Center>
         <Logo width={60} height={40} />
 
@@ -40,7 +42,9 @@ export function SignUp() {
           seus produtos
         </Text>
       </Center>
+      {/*End -  Welcome Message */}
 
+      {/* Create Account Form */}
       <Center mt={"$8"} gap={"$4"}>
         <Avatar
           imageSource="https://i.pravatar.cc/300"
@@ -73,6 +77,8 @@ export function SignUp() {
           />
         </Center>
       </Center>
+      {/* End - Create Account Form */}
     </VStack>
+    /* End - Container */
   )
 }

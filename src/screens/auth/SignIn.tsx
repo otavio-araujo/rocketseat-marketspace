@@ -19,7 +19,9 @@ export function SignIn() {
     console.log("It logs in the User.")
   }
   return (
+    /* Container */
     <VStack flex={1} bg={"$gray700"}>
+      {/* Login Form */}
       <VStack
         bg={"$gray600"}
         pt={"$11"}
@@ -29,6 +31,7 @@ export function SignIn() {
         borderBottomLeftRadius={"$3xl"}
         borderBottomRightRadius={"$3xl"}
       >
+        {/* Logo */}
         <Center mt={"$16"}>
           <Logo />
           <Marketspace style={{ marginTop: 20 }} />
@@ -36,7 +39,9 @@ export function SignIn() {
             Seu espaço de compra e venda
           </Text>
         </Center>
+        {/* End - Logo */}
 
+        {/* Form */}
         <Center mt={"$19"} gap={"$4"}>
           <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
             Acesse sua conta
@@ -52,7 +57,9 @@ export function SignIn() {
             onPress={handleSignIn}
           />
         </Center>
+        {/* End - Form */}
       </VStack>
+      {/* End - Login Form */}
 
       <VStack mt={"$14"} px={"$12"}>
         <Center gap={"$4"}>
@@ -69,5 +76,6 @@ export function SignIn() {
         </Center>
       </VStack>
     </VStack>
+    /* End - Container */
   )
 }
