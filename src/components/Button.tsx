@@ -3,7 +3,9 @@ import {
   Button as GluestackButton,
   ButtonText,
   ButtonIcon,
+  ButtonSpinner,
 } from "@gluestack-ui/themed"
+import { Loading } from "./Loading"
 
 type Props = ComponentProps<typeof GluestackButton> & {
   buttonVariant?: "primary" | "muted" | "dark"
@@ -43,20 +45,28 @@ export function Button({
       }
       disabled={isLoading}
     >
-      {icon !== false && (
-        <ButtonIcon
-          as={icon}
-          mr="$2"
+      {isLoading ? (
+        <ButtonSpinner
           color={buttonVariant === "muted" ? "$gray300" : "$gray600"}
         />
+      ) : (
+        icon !== false && (
+          <ButtonIcon
+            as={icon}
+            mr="$2"
+            color={buttonVariant === "muted" ? "$gray300" : "$gray600"}
+          />
+        )
       )}
-      <ButtonText
-        color={buttonVariant === "muted" ? "$gray200" : "$gray700"}
-        fontFamily="$heading"
-        fontSize={"$sm"}
-      >
-        {label}
-      </ButtonText>
+      {!isLoading && (
+        <ButtonText
+          color={buttonVariant === "muted" ? "$gray200" : "$gray700"}
+          fontFamily="$heading"
+          fontSize={"$sm"}
+        >
+          {label}
+        </ButtonText>
+      )}
     </GluestackButton>
   )
 }

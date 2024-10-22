@@ -11,6 +11,8 @@ import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 import User from "phosphor-react-native/src/icons/User"
 import PencilSimpleLine from "phosphor-react-native/src/icons/PencilSimpleLine"
 
+import defaultUser from "@assets/defaultUser.jpg"
+
 type Props = ComponentProps<typeof GluestackAvatar> & {
   imageSource?: string | null
   isEditable?: boolean
@@ -57,7 +59,7 @@ export function Avatar({
       ) : (
         <AvatarImage
           source={{
-            uri: imageSource || "",
+            uri: imageSource || defaultUser,
           }}
           alt="Foto de perfil do usuário logado"
         />

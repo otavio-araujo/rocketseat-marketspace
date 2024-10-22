@@ -4,22 +4,20 @@ import { Controller, useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 
-import {
-  Center,
-  FormControlError,
-  FormControlErrorText,
-  Text,
-  VStack,
-} from "@gluestack-ui/themed"
+import { Center, Text, useToast, VStack } from "@gluestack-ui/themed"
+
+import { useAuth } from "@hooks/useAuth"
+import { AppError } from "@utils/AppError"
 
 import Logo from "@assets/logo/logo.svg"
 import Marketspace from "@assets/logo/marketspace.svg"
 
 import { Input } from "@components/Input"
+import { Toast } from "@components/Toast"
 import { Button } from "@components/Button"
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
-import { useAuth } from "@hooks/useAuth"
+import { useState } from "react"
 
 type FormData = {
   email: string
@@ -37,6 +35,9 @@ const signInSchema = yup.object({
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const toast = useToast()
 
   const { signIn } = useAuth()
 
@@ -51,8 +52,32 @@ export function SignIn() {
   function handleSignUp() {
     navigation.navigate("signUp")
   }
-  function handleSignIn({ email, password }: FormData) {
-    signIn(email, password)
+  async function handleSignIn({ email, password }: FormData) {
+    try {
+      setIsLoading(true)
+      await signIn(email, password)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Não foi possível realizar o login. Tente novamente mais tarde."
+
+      setIsLoading(false)
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Erro no login"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
   }
   return (
     /* Container */
@@ -118,6 +143,7 @@ export function SignIn() {
             label="Entrar"
             buttonVariant="primary"
             onPress={handleSubmit(handleSignIn)}
+            isLoading={isLoading}
           />
         </Center>
         {/* End - Form */}
