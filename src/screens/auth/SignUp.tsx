@@ -1,18 +1,23 @@
+import { useState } from "react"
+import * as FileSystem from "expo-file-system"
+import * as ImagePicker from "expo-image-picker"
 import { useNavigation } from "@react-navigation/native"
 
+import * as yup from "yup"
 import { Controller, useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
 
 import { Center, ScrollView, Text, VStack } from "@gluestack-ui/themed"
 
 import Logo from "@assets/logo/logo.svg"
 
+import { Toast } from "@components/Toast"
 import { Input } from "@components/Input"
-import { Button } from "@components/Button"
 import { Avatar } from "@components/Avatar"
+import { Button } from "@components/Button"
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
+import { Alert } from "react-native"
 
 type FormData = {
   name: string
@@ -46,6 +51,8 @@ const signUpSchema = yup.object({
 export function SignUp() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
+  const [userAvatar, setUserAvatar] = useState<string | null>(null)
+
   const {
     control,
     handleSubmit,
@@ -61,11 +68,44 @@ export function SignUp() {
     navigation.navigate("signIn")
   }
 
-  function handleUserAvatar() {
-    console.log("It changes the Avatar")
+  async function handleUserAvatarSelect() {
+    try {
+      const avatarSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 4],
+        quality: 1,
+      })
+
+      if (avatarSelected.canceled) {
+        return
+      }
+
+      const avatarURI = avatarSelected.assets[0].uri
+
+      if (avatarURI) {
+        const fileInfo = (await FileSystem.getInfoAsync(avatarURI)) as {
+          size: number
+        }
+
+        if (fileInfo.size && fileInfo.size / (1024 * 1024) > 5) {
+          return Alert.alert("O tamanho do arquivo ultrapassa o limite de 5MB")
+        }
+
+        setUserAvatar(avatarURI)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <ScrollView flexGrow={1} showsVerticalScrollIndicator={false}>
+      <Toast
+        id="1"
+        title="Sucesso"
+        description="Conta criada com sucesso!"
+        onClose={() => {}}
+      />
       {/* Container */}
       <VStack flex={1} bg={"$gray600"} pt={"$16"} px={"$12"} pb={"$8"}>
         {/* Welcome Message */}
@@ -90,9 +130,9 @@ export function SignUp() {
         {/* Create Account Form */}
         <Center mt={"$8"} gap={"$4"}>
           <Avatar
-            imageSource="https://i.pravatar.cc/300"
+            imageSource={userAvatar}
             isEditable
-            handleAvatar={handleUserAvatar}
+            handleAvatar={handleUserAvatarSelect}
           />
 
           <Controller
@@ -186,6 +226,7 @@ export function SignUp() {
         </Center>
         {/* End - Create Account Form */}
       </VStack>
+
       {/* End - Container */}
     </ScrollView>
   )

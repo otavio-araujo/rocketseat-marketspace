@@ -12,7 +12,7 @@ import User from "phosphor-react-native/src/icons/User"
 import PencilSimpleLine from "phosphor-react-native/src/icons/PencilSimpleLine"
 
 type Props = ComponentProps<typeof GluestackAvatar> & {
-  imageSource?: string
+  imageSource?: string | null
   isEditable?: boolean
   isCardAd?: boolean
   isWelcomeAvatar?: boolean
@@ -23,7 +23,7 @@ export function Avatar({
   isWelcomeAvatar = false,
   isEditable = false,
   isCardAd = false,
-  imageSource,
+  imageSource = null,
   handleAvatar,
   ...rest
 }: Props) {
@@ -52,12 +52,12 @@ export function Avatar({
       }}
       {...rest}
     >
-      {isEditable ? (
+      {isEditable && imageSource === null ? (
         <User size={44} color={tokens.colors.gray400} weight="bold" />
       ) : (
         <AvatarImage
           source={{
-            uri: "https://i.pravatar.cc/300",
+            uri: imageSource || "",
           }}
           alt="Foto de perfil do usuário logado"
         />
