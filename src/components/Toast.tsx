@@ -6,14 +6,16 @@ import {
   Icon,
   VStack,
   HStack,
+  View,
 } from "@gluestack-ui/themed"
 
 import X from "phosphor-react-native/src/icons/X"
 
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 import { TouchableOpacity } from "react-native"
+import { ComponentProps } from "react"
 
-type Props = {
+type Props = ComponentProps<typeof GluestackToast> & {
   id: string
   title?: string
   description: string
@@ -26,12 +28,14 @@ export function Toast({
   description,
   toastVariant = "info",
   onClose,
+  ...rest
 }: Props) {
   const { tokens } = gluestackUIConfig
 
   return (
     <GluestackToast
       nativeID={`toast-${id}`}
+      mt={"$10"}
       bg={
         toastVariant === "success"
           ? "$green100"
@@ -52,8 +56,9 @@ export function Toast({
           : "$blue300"
       }
       rounded={"$md"}
+      {...rest}
     >
-      <VStack flex={1} gap={"$2"}>
+      <VStack width={"$full"} gap={"$2"}>
         <HStack alignItems="center" gap={"$2"}>
           <ToastTitle
             flex={1}

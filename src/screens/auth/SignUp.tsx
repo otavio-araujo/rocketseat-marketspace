@@ -7,7 +7,13 @@ import * as yup from "yup"
 import { Controller, useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 
-import { Center, ScrollView, Text, VStack } from "@gluestack-ui/themed"
+import {
+  Center,
+  ScrollView,
+  Text,
+  useToast,
+  VStack,
+} from "@gluestack-ui/themed"
 
 import Logo from "@assets/logo/logo.svg"
 
@@ -17,7 +23,6 @@ import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
-import { Alert } from "react-native"
 
 type FormData = {
   name: string
@@ -50,6 +55,7 @@ const signUpSchema = yup.object({
 
 export function SignUp() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const toast = useToast()
 
   const [userAvatar, setUserAvatar] = useState<string | null>(null)
 
@@ -88,8 +94,19 @@ export function SignUp() {
           size: number
         }
 
-        if (fileInfo.size && fileInfo.size / (1024 * 1024) > 5) {
-          return Alert.alert("O tamanho do arquivo ultrapassa o limite de 5MB")
+        if (fileInfo.size && fileInfo.size / (1024 * 1024) > 0) {
+          return toast.show({
+            placement: "top",
+            render: ({ id }) => (
+              <Toast
+                id={id}
+                title="Foto de perfil"
+                toastVariant="error"
+                description="A imagem não pode ter mais que 5MB."
+                onClose={() => toast.close(id)}
+              />
+            ),
+          })
         }
 
         setUserAvatar(avatarURI)
@@ -100,12 +117,6 @@ export function SignUp() {
   }
   return (
     <ScrollView flexGrow={1} showsVerticalScrollIndicator={false}>
-      <Toast
-        id="1"
-        title="Sucesso"
-        description="Conta criada com sucesso!"
-        onClose={() => {}}
-      />
       {/* Container */}
       <VStack flex={1} bg={"$gray600"} pt={"$16"} px={"$12"} pb={"$8"}>
         {/* Welcome Message */}
