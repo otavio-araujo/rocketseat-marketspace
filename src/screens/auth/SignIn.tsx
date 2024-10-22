@@ -19,6 +19,7 @@ import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
+import { useAuth } from "@hooks/useAuth"
 
 type FormData = {
   email: string
@@ -37,6 +38,8 @@ const signInSchema = yup.object({
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
+  const { signIn } = useAuth()
+
   const {
     control,
     handleSubmit,
@@ -48,8 +51,8 @@ export function SignIn() {
   function handleSignUp() {
     navigation.navigate("signUp")
   }
-  function handleSignIn(data: FormData) {
-    console.log(data)
+  function handleSignIn({ email, password }: FormData) {
+    signIn(email, password)
   }
   return (
     /* Container */
