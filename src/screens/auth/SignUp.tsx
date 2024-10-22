@@ -3,6 +3,10 @@ import * as FileSystem from "expo-file-system"
 import * as ImagePicker from "expo-image-picker"
 import { useNavigation } from "@react-navigation/native"
 
+import axios from "axios"
+import { api } from "@services/api"
+import { AppError } from "@utils/AppError"
+
 import * as yup from "yup"
 import { Controller, useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -67,8 +71,76 @@ export function SignUp() {
     resolver: yupResolver(signUpSchema),
   })
 
-  function handleSignUp({ name, email, tel, password }: FormData) {
-    console.log(name, email, tel, password)
+  async function handleSignUp({ name, email, tel, password }: FormData) {
+    if (!userAvatar) {
+      return toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Foto de perfil"
+            toastVariant="error"
+            description="Por favor, selecione uma foto de perfil."
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+
+    const fileExtension = userAvatar.split(".").pop()
+
+    const avatarFile = {
+      name: `${Date.now()}.${fileExtension}`,
+      uri: userAvatar,
+      type: `image/${fileExtension}`,
+    } as any
+
+    const createUserForm = new FormData()
+    createUserForm.append("avatar", avatarFile)
+    createUserForm.append("name", name)
+    createUserForm.append("email", email)
+    createUserForm.append("tel", tel)
+    createUserForm.append("password", password)
+
+    try {
+      const response = await api.post("/users", createUserForm, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Sucesso"
+            toastVariant="success"
+            description="Seu cadastro foi realizado com sucesso."
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+
+      navigation.navigate("signIn")
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const description = isAppError
+        ? error.message
+        : "Não foi possível criar a conta. Tente novamente mais tarde."
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Erro ao criar a conta"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
   }
   function handleGoBack() {
     navigation.navigate("signIn")
@@ -87,14 +159,14 @@ export function SignUp() {
         return
       }
 
-      const avatarURI = avatarSelected.assets[0].uri
+      const photoSelected = avatarSelected.assets[0]
 
-      if (avatarURI) {
-        const fileInfo = (await FileSystem.getInfoAsync(avatarURI)) as {
+      if (photoSelected.uri) {
+        const fileInfo = (await FileSystem.getInfoAsync(photoSelected.uri)) as {
           size: number
         }
 
-        if (fileInfo.size && fileInfo.size / (1024 * 1024) > 0) {
+        if (fileInfo.size && fileInfo.size / (1024 * 1024) > 3) {
           return toast.show({
             placement: "top",
             render: ({ id }) => (
@@ -109,7 +181,7 @@ export function SignUp() {
           })
         }
 
-        setUserAvatar(avatarURI)
+        setUserAvatar(photoSelected.uri)
       }
     } catch (error) {
       console.log(error)
@@ -208,7 +280,7 @@ export function SignUp() {
             render={({ field: { onChange, value } }) => (
               <Input
                 type="password"
-                placeholder="Cofirme a senha"
+                placeholder="Confirme a senha"
                 onChangeText={onChange}
                 value={value}
                 errorMessages={errors.passwordConfirmation?.message}
@@ -217,7 +289,7 @@ export function SignUp() {
           />
 
           <Button
-            label="Entrar"
+            label="Criar"
             buttonVariant="dark"
             onPress={handleSubmit(handleSignUp)}
             width={"$full"}
