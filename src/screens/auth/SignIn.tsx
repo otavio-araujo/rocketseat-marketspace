@@ -46,6 +46,10 @@ export function SignIn() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
+    defaultValues: {
+      email: "otavio@email.com",
+      password: "@aA12345",
+    },
     resolver: yupResolver(signInSchema),
   })
 

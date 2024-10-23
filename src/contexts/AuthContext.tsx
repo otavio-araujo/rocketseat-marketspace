@@ -8,6 +8,7 @@ import {
   storageUserGet,
   storageUserRemove,
 } from "@storage/storageUser"
+import { storageAuthTokenSave } from "@storage/storageAuthToken"
 
 export type AuthContextDataProps = {
   user: UserDTO
@@ -28,13 +29,42 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true)
 
+  async function loadUserData() {
+    try {
+      const loggedUser = await storageUserGet()
+      if (loggedUser) {
+        setUser(loggedUser)
+      }
+    } catch (error) {
+      throw error
+    } finally {
+      setIsLoadingUserStorageData(false)
+    }
+  }
+
+  async function storageUserAndToken(userData: UserDTO, token: string) {
+    try {
+      setIsLoadingUserStorageData(true)
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`
+
+      await storageUserSave(userData)
+      await storageAuthTokenSave(token)
+
+      setUser(userData)
+    } catch (error) {
+      throw error
+    } finally {
+      setIsLoadingUserStorageData(false)
+    }
+  }
+
   async function signIn(email: string, password: string) {
     try {
       const { data } = await api.post("/sessions", { email, password })
 
-      if (data.user) {
-        setUser(data.user)
-        await storageUserSave(data.user)
+      if (data.user && data.token) {
+        storageUserAndToken(data.user, data.token)
       }
     } catch (error) {
       throw error
@@ -46,19 +76,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setIsLoadingUserStorageData(true)
       setUser({} as UserDTO)
       await storageUserRemove()
-    } catch (error) {
-      throw error
-    } finally {
-      setIsLoadingUserStorageData(false)
-    }
-  }
-
-  async function loadUserData() {
-    try {
-      const loggedUser = await storageUserGet()
-      if (loggedUser) {
-        setUser(loggedUser)
-      }
     } catch (error) {
       throw error
     } finally {
