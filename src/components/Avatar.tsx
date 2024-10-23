@@ -58,9 +58,7 @@ export function Avatar({
         <User size={44} color={tokens.colors.gray400} weight="bold" />
       ) : (
         <AvatarImage
-          source={{
-            uri: imageSource || defaultUser,
-          }}
+          source={imageSource ? { uri: imageSource } : defaultUser}
           alt="Foto de perfil do usuário logado"
         />
       )}
