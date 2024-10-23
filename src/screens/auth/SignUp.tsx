@@ -3,8 +3,8 @@ import * as FileSystem from "expo-file-system"
 import * as ImagePicker from "expo-image-picker"
 import { useNavigation } from "@react-navigation/native"
 
-import axios from "axios"
 import { api } from "@services/api"
+import { useAuth } from "@hooks/useAuth"
 import { AppError } from "@utils/AppError"
 
 import * as yup from "yup"
@@ -59,6 +59,7 @@ const signUpSchema = yup.object({
 
 export function SignUp() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const { signIn } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const toast = useToast()
 
@@ -88,6 +89,8 @@ export function SignUp() {
       })
     }
 
+    setIsLoading(true)
+
     const fileExtension = userAvatar.split(".").pop()
 
     const avatarFile = {
@@ -104,27 +107,28 @@ export function SignUp() {
     createUserForm.append("password", password)
 
     try {
-      const response = await api.post("/users", createUserForm, {
+      await api.post("/users", createUserForm, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
+      await signIn(email, password)
 
-      toast.show({
-        placement: "top",
-        render: ({ id }) => (
-          <Toast
-            id={id}
-            title="Sucesso"
-            toastVariant="success"
-            description="Seu cadastro foi realizado com sucesso."
-            onClose={() => toast.close(id)}
-          />
-        ),
-      })
-
-      navigation.navigate("signIn")
+      // toast.show({
+      //   placement: "top",
+      //   render: ({ id }) => (
+      //     <Toast
+      //       id={id}
+      //       title="Sucesso"
+      //       toastVariant="success"
+      //       description="Seu cadastro foi realizado com sucesso."
+      //       onClose={() => toast.close(id)}
+      //     />
+      //   ),
+      // })
     } catch (error) {
+      setIsLoading(false)
+
       const isAppError = error instanceof AppError
       const description = isAppError
         ? error.message
