@@ -52,7 +52,7 @@ export function UserAdDetail() {
     navigation.goBack()
   }
   return (
-    <VStack mt={"$4"}>
+    <VStack pt={"$12"}>
       <Header
         handleCreateAd={() => {}}
         handleEditAd={() => {}}

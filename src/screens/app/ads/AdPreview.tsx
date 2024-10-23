@@ -7,7 +7,7 @@ import {
   HStack,
   ScrollView,
   Center,
-  StatusBar,
+  SafeAreaView,
 } from "@gluestack-ui/themed"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
@@ -15,6 +15,7 @@ import { AppNavigatorRoutesProps } from "@routes/app.routes"
 import { Badge } from "@components/Badge"
 import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
+import { StatusBar } from "@components/StatusBar"
 import { ProductCarousel } from "@components/ProductCarousel"
 
 import Tag from "phosphor-react-native/src/icons/Tag"
@@ -24,6 +25,8 @@ import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Barcode from "phosphor-react-native/src/icons/Barcode"
 import ArrowLeft from "phosphor-react-native/src/icons/ArrowLeft"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
+import { Fragment } from "react"
+import { Platform } from "react-native"
 
 type AdDetails = {
   id: number
@@ -60,11 +63,11 @@ export function AdPreview() {
     <VStack flex={1}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor={"$blueLight"}
+        backgroundColor={tokens.colors.blueLight}
         translucent
       />
       <Center
-        pt={"$8"}
+        pt={Platform.OS === "android" ? "$12" : "$18"}
         bg={"$blueLight"}
         gap={2}
         px={"$6"}

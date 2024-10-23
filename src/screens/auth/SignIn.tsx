@@ -114,6 +114,8 @@ export function SignIn() {
             render={({ field: { onChange, value } }) => (
               <Input
                 type="text"
+                keyboardType="email-address"
+                autoCapitalize="none"
                 placeholder="E-mail"
                 onChangeText={onChange}
                 value={value}

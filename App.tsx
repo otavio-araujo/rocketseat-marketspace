@@ -1,4 +1,3 @@
-import { SafeAreaView } from "react-native-safe-area-context"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 import {
@@ -8,14 +7,19 @@ import {
   Karla_300Light,
 } from "@expo-google-fonts/karla"
 
-import { GluestackUIProvider, StatusBar, VStack } from "@gluestack-ui/themed"
-import { config } from "./config/gluestack-ui.config"
+import { GluestackUIProvider } from "@gluestack-ui/themed"
+import { config, gluestackUIConfig } from "./config/gluestack-ui.config"
+
+const { tokens } = gluestackUIConfig
 
 import { Routes } from "@routes/index"
 
 import { Loading } from "@components/Loading"
 
 import { AuthContextProvider } from "@contexts/AuthContext"
+import { SafeAreaView } from "react-native"
+import { Fragment } from "react"
+import { StatusBar } from "@components/StatusBar"
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -25,19 +29,19 @@ export default function App() {
   })
 
   return (
-    <GluestackUIProvider config={config}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaView style={{ flex: 1 }}>
+    <Fragment>
+      <GluestackUIProvider config={config}>
+        <GestureHandlerRootView>
           <StatusBar
             barStyle="dark-content"
-            backgroundColor="$gray600"
+            backgroundColor={tokens.colors.gray600}
             translucent
           />
           <AuthContextProvider>
             {fontsLoaded ? <Routes /> : <Loading />}
           </AuthContextProvider>
-        </SafeAreaView>
-      </GestureHandlerRootView>
-    </GluestackUIProvider>
+        </GestureHandlerRootView>
+      </GluestackUIProvider>
+    </Fragment>
   )
 }

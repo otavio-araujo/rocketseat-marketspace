@@ -51,7 +51,7 @@ export function AdDetails() {
   }
   return (
     /* Container */
-    <VStack mt={"$4"} flex={1}>
+    <VStack pt={"$12"} flex={1}>
       <Header
         handleCreateAd={() => {}}
         handleEditAd={() => {}}

@@ -59,7 +59,7 @@ export function AdCreate() {
     navigation.goBack()
   }
   return (
-    <VStack flex={1} gap={"$4"} pt={"$5"}>
+    <VStack flex={1} gap={"$4"} pt={"$12"}>
       {/* Header */}
       <Header
         title="Criar anúncio"

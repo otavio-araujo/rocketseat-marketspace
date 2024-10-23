@@ -27,7 +27,7 @@ export function UserAds() {
 
   return (
     /* Container */
-    <VStack flex={1} gap={"$4"} pt={"$5"}>
+    <VStack flex={1} gap={"$4"} pt={"$12"}>
       <Header
         title="Meus anúncios"
         headerVariant="userAds"

@@ -74,7 +74,7 @@ export function Home() {
 
   return (
     /* Container */
-    <VStack flex={1} px={"$8"} pt={"$8"}>
+    <VStack flex={1} px={"$8"} pt={"$12"}>
       {/* Header */}
       <HStack justifyContent="space-between" alignItems="center" gap={"$3"}>
         <HStack gap={"$2"} alignItems="center">
