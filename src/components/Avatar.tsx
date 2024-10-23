@@ -17,6 +17,7 @@ import { api } from "@services/api"
 import { useAuth } from "@hooks/useAuth"
 
 type Props = ComponentProps<typeof GluestackAvatar> & {
+  imageSource?: string | null
   isEditable?: boolean
   isCardAd?: boolean
   isWelcomeAvatar?: boolean
@@ -27,6 +28,7 @@ export function Avatar({
   isWelcomeAvatar = false,
   isEditable = false,
   isCardAd = false,
+  imageSource = null,
   handleAvatar,
   ...rest
 }: Props) {
@@ -57,12 +59,14 @@ export function Avatar({
       }}
       {...rest}
     >
-      {isEditable && user.avatar === null ? (
+      {isEditable && imageSource === null ? (
         <User size={44} color={tokens.colors.gray400} weight="bold" />
       ) : (
         <AvatarImage
           source={
-            user.avatar === null
+            imageSource !== null
+              ? { uri: imageSource }
+              : user.avatar === null
               ? defaultUser
               : {
                   uri: `${api.defaults.baseURL}/images/${user.avatar}`,

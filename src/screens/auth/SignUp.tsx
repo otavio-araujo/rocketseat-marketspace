@@ -59,6 +59,7 @@ const signUpSchema = yup.object({
 
 export function SignUp() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const [isLoading, setIsLoading] = useState(false)
   const toast = useToast()
 
   const [userAvatar, setUserAvatar] = useState<string | null>(null)
@@ -213,8 +214,8 @@ export function SignUp() {
         {/* Create Account Form */}
         <Center mt={"$8"} gap={"$4"}>
           <Avatar
-            imageSource={userAvatar}
             isEditable
+            imageSource={userAvatar}
             handleAvatar={handleUserAvatarSelect}
           />
 
@@ -293,6 +294,7 @@ export function SignUp() {
             buttonVariant="dark"
             onPress={handleSubmit(handleSignUp)}
             width={"$full"}
+            isLoading={isLoading}
           />
 
           <Center w={"$full"} gap={"$2"}>
