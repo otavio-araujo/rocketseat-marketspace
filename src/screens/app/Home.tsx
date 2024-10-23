@@ -22,6 +22,7 @@ import {
   Divider,
   CloseIcon,
   CheckboxGroup,
+  Image,
 } from "@gluestack-ui/themed"
 
 import { gluestackUIConfig } from "../../../config/gluestack-ui.config"
@@ -39,6 +40,8 @@ import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { Checkbox } from "@components/Checkbox"
 import { ProductCard } from "@components/ProductCard"
+import { useAuth } from "@hooks/useAuth"
+import { api } from "@services/api"
 
 export function Home() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
@@ -54,6 +57,7 @@ export function Home() {
   const adsList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   const [showModal, setShowModal] = useState(false)
   const [isExchangeable, setIsExchangeable] = useState<boolean>(false)
+  const { user } = useAuth()
   const ref = useRef(null)
 
   function handleGoToAdDetails() {
@@ -75,12 +79,13 @@ export function Home() {
       <HStack justifyContent="space-between" alignItems="center" gap={"$3"}>
         <HStack gap={"$2"} alignItems="center">
           <Avatar isWelcomeAvatar />
+
           <VStack>
             <Text fontFamily={"$body"} fontSize={"$md"}>
               Boas vindas,
             </Text>
             <Text fontFamily={"$heading"} fontSize={"$md"}>
-              Maria!
+              {user.name}!
             </Text>
           </VStack>
         </HStack>

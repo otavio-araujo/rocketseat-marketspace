@@ -13,8 +13,10 @@ import PencilSimpleLine from "phosphor-react-native/src/icons/PencilSimpleLine"
 
 import defaultUser from "@assets/defaultUser.jpg"
 
+import { api } from "@services/api"
+import { useAuth } from "@hooks/useAuth"
+
 type Props = ComponentProps<typeof GluestackAvatar> & {
-  imageSource?: string | null
   isEditable?: boolean
   isCardAd?: boolean
   isWelcomeAvatar?: boolean
@@ -25,11 +27,12 @@ export function Avatar({
   isWelcomeAvatar = false,
   isEditable = false,
   isCardAd = false,
-  imageSource = null,
   handleAvatar,
   ...rest
 }: Props) {
   const { tokens } = gluestackUIConfig
+  const { user } = useAuth()
+
   return (
     <GluestackAvatar
       borderColor={isCardAd ? "$gray700" : "$blueLight"}
@@ -54,11 +57,17 @@ export function Avatar({
       }}
       {...rest}
     >
-      {isEditable && imageSource === null ? (
+      {isEditable && user.avatar === null ? (
         <User size={44} color={tokens.colors.gray400} weight="bold" />
       ) : (
         <AvatarImage
-          source={imageSource ? { uri: imageSource } : defaultUser}
+          source={
+            user.avatar === null
+              ? defaultUser
+              : {
+                  uri: `${api.defaults.baseURL}/images/${user.avatar}`,
+                }
+          }
           alt="Foto de perfil do usuário logado"
         />
       )}
