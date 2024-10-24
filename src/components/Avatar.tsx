@@ -65,7 +65,7 @@ export function Avatar({
         <AvatarImage
           source={
             imageSource !== null
-              ? { uri: imageSource }
+              ? { uri: `${api.defaults.baseURL}/images/${imageSource}` }
               : user.avatar === null
               ? defaultUser
               : {

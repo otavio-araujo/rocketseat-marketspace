@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
-import { ScrollView, TouchableOpacity } from "react-native"
+import { Platform, ScrollView, TouchableOpacity } from "react-native"
 
 import {
   Box,
@@ -15,14 +15,18 @@ import {
   RadioIcon,
   RadioLabel,
   CheckboxGroup,
+  useToast,
 } from "@gluestack-ui/themed"
-import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
+import { gluestackUIConfig } from "@config/gluestack-ui.config"
+
+import { AppError } from "@utils/AppError"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
 import Plus from "phosphor-react-native/src/regular/Plus"
 
 import { Input } from "@components/Input"
+import { Toast } from "@components/Toast"
 import { Button } from "@components/Button"
 import { Header } from "@components/Header"
 import { Textarea } from "@components/Textarea"
@@ -47,6 +51,7 @@ export function AdCreate() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
   const { tokens } = gluestackUIConfig
+  const toast = useToast()
 
   const [payments, setPayments] = useState([])
   const [isExchangeable, setIsExchangeable] = useState(false)
@@ -58,8 +63,32 @@ export function AdCreate() {
   function handleGoBack() {
     navigation.goBack()
   }
+
+  async function fetchPaymentMethods() {
+    try {
+      return null
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const description = isAppError
+        ? error.message
+        : "Não foi possível carregar os métodos de pagamento."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Métodos de pagamento"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
   return (
-    <VStack flex={1} gap={"$4"} pt={"$12"}>
+    <VStack flex={1} gap={"$4"} pt={Platform.OS === "android" ? "$12" : "$16"}>
       {/* Header */}
       <Header
         title="Criar anúncio"

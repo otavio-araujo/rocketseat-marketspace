@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react"
-import { FlatList, TouchableOpacity } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { FlatList, Platform, TouchableOpacity } from "react-native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import {
   Icon,
   Text,
@@ -23,9 +23,10 @@ import {
   CloseIcon,
   CheckboxGroup,
   Image,
+  useToast,
+  set,
 } from "@gluestack-ui/themed"
-
-import { gluestackUIConfig } from "../../../config/gluestack-ui.config"
+import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
 import Tag from "phosphor-react-native/src/icons/Tag"
 import Plus from "phosphor-react-native/src/icons/Plus"
@@ -35,18 +36,23 @@ import MagnifyingGlass from "phosphor-react-native/src/icons/MagnifyingGlass"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
+import { useAuth } from "@hooks/useAuth"
+
+import { api } from "@services/api"
+import { AppError } from "@utils/AppError"
+
 import { Badge } from "@components/Badge"
+import { Toast } from "@components/Toast"
 import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { Checkbox } from "@components/Checkbox"
 import { ProductCard } from "@components/ProductCard"
-import { useAuth } from "@hooks/useAuth"
-import { api } from "@services/api"
 
 export function Home() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
   const { tokens } = gluestackUIConfig
+  const toast = useToast()
   const [payments, setPayments] = useState([
     "boleto",
     "pix",
@@ -54,7 +60,7 @@ export function Home() {
     "deposito",
     "dinheiro",
   ])
-  const adsList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  const [adsList, setAdsList] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [isExchangeable, setIsExchangeable] = useState<boolean>(false)
   const { user } = useAuth()
@@ -72,9 +78,42 @@ export function Home() {
     navigation.navigate("userAds")
   }
 
+  async function fetchProducts() {
+    try {
+      const { data } = await api.get("/products/")
+
+      setAdsList(data)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Não foi possível carregar os anúncios."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Anúncios"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts()
+    }, [])
+  )
+
   return (
     /* Container */
-    <VStack flex={1} px={"$8"} pt={"$12"}>
+    <VStack flex={1} px={"$8"} pt={Platform.OS === "android" ? "$12" : "$16"}>
       {/* Header */}
       <HStack justifyContent="space-between" alignItems="center" gap={"$3"}>
         <HStack gap={"$2"} alignItems="center">
@@ -194,7 +233,11 @@ export function Home() {
         data={adsList}
         keyExtractor={(item) => String(item)}
         renderItem={({ item }) => (
-          <ProductCard onPress={handleGoToAdDetails} hasAvatar />
+          <ProductCard
+            onPress={handleGoToAdDetails}
+            hasAvatar
+            productData={item}
+          />
         )}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{

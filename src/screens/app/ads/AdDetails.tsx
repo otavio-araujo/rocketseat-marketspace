@@ -1,7 +1,16 @@
+import { Platform } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 
-import { VStack, Text, HStack, ScrollView } from "@gluestack-ui/themed"
-import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
+import { AppError } from "@utils/AppError"
+
+import {
+  VStack,
+  Text,
+  HStack,
+  ScrollView,
+  useToast,
+} from "@gluestack-ui/themed"
+import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -51,7 +60,7 @@ export function AdDetails() {
   }
   return (
     /* Container */
-    <VStack pt={"$12"} flex={1}>
+    <VStack pt={Platform.OS === "android" ? "$12" : "$16"} flex={1}>
       <Header
         handleCreateAd={() => {}}
         handleEditAd={() => {}}

@@ -17,6 +17,7 @@ import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Bank from "phosphor-react-native/src/icons/Bank"
 import Power from "phosphor-react-native/src/icons/Power"
 import TrashSimple from "phosphor-react-native/src/icons/TrashSimple"
+import { Platform } from "react-native"
 
 export type AdDetails = {
   id: number
@@ -52,7 +53,7 @@ export function UserAdDetail() {
     navigation.goBack()
   }
   return (
-    <VStack pt={"$12"}>
+    <VStack pt={Platform.OS === "android" ? "$8" : "$12"}>
       <Header
         handleCreateAd={() => {}}
         handleEditAd={() => {}}
