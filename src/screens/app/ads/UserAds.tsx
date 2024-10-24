@@ -1,18 +1,28 @@
-import { FlatList, HStack, Text, VStack } from "@gluestack-ui/themed"
+import { useCallback, useEffect, useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+
+import { FlatList, HStack, Text, VStack, useToast } from "@gluestack-ui/themed"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
-import { useNavigation } from "@react-navigation/native"
+
+import { api } from "@services/api"
+
+import { ProductDTO } from "@dtos/ProductDTO"
+
+import { AppError } from "@utils/AppError"
+
+import { Toast } from "@components/Toast"
 import { Header } from "@components/Header"
 import { Selectbox } from "@components/Selectbox"
 import { ProductCard } from "@components/ProductCard"
-import { useEffect, useState } from "react"
 
 export function UserAds() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+  const toast = useToast()
   const adStatuses = ["todos", "ativos", "desativados"]
   const [adStatus, setAdStatus] = useState("todos")
+  const [adsList, setAdsList] = useState<ProductDTO[]>([] as ProductDTO[])
 
-  const adsList = [1, 2, 3, 4, 5]
   function handleUserAdDetail() {
     navigation.navigate("userAdDetail")
   }
@@ -21,9 +31,42 @@ export function UserAds() {
     navigation.navigate("adCreate")
   }
 
+  async function fetchProducts() {
+    try {
+      const { data } = await api.get("/users/products")
+
+      setAdsList(data)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Não foi possível carregar os anúncios."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Meus anúncios"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
   function handleGoBack() {
     navigation.goBack()
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts()
+    }, [])
+  )
 
   return (
     /* Container */
@@ -52,9 +95,12 @@ export function UserAds() {
       {/* Ads List */}
       <FlatList
         data={adsList}
-        keyExtractor={(item) => String(item)}
+        keyExtractor={(item: any) => item.id.toString()}
         renderItem={({ item }) => (
-          <ProductCard onPress={() => handleUserAdDetail()} />
+          <ProductCard
+            onPress={() => handleUserAdDetail()}
+            productData={item as ProductDTO}
+          />
         )}
         contentContainerStyle={{
           paddingBottom: 68,

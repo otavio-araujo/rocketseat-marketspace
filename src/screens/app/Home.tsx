@@ -47,6 +47,7 @@ import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { Checkbox } from "@components/Checkbox"
 import { ProductCard } from "@components/ProductCard"
+import { ProductDTO } from "@dtos/ProductDTO"
 
 export function Home() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
@@ -60,7 +61,8 @@ export function Home() {
     "deposito",
     "dinheiro",
   ])
-  const [adsList, setAdsList] = useState([])
+  const [adsList, setAdsList] = useState<ProductDTO[]>([] as ProductDTO[])
+  const [userTotalActiveAds, setUserTotalActiveAds] = useState(0)
   const [showModal, setShowModal] = useState(false)
   const [isExchangeable, setIsExchangeable] = useState<boolean>(false)
   const { user } = useAuth()
@@ -105,9 +107,24 @@ export function Home() {
     }
   }
 
+  async function getUserTotalActiveAds() {
+    try {
+      const { data } = await api.get("/users/products")
+
+      setUserTotalActiveAds(data.filter((ad: any) => ad.is_active).length)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Não foi possível carregar os anúncios do usuário logado."
+    }
+  }
+
   useFocusEffect(
     useCallback(() => {
       fetchProducts()
+      getUserTotalActiveAds()
     }, [])
   )
 
@@ -159,10 +176,10 @@ export function Home() {
             <Tag size={tokens.space[6]} color={tokens.colors.blue} />
             <VStack>
               <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray200"}>
-                5
+                {userTotalActiveAds}
               </Text>
               <Text fontFamily={"$body"} fontSize={"$xs"} color={"$gray200"}>
-                Anúncios ativos
+                {userTotalActiveAds > 1 ? "Anúncios ativos" : "Anúncio ativo"}
               </Text>
             </VStack>
           </HStack>
@@ -231,7 +248,7 @@ export function Home() {
       {/* Ads List */}
       <FlatList
         data={adsList}
-        keyExtractor={(item) => String(item)}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <ProductCard
             onPress={handleGoToAdDetails}

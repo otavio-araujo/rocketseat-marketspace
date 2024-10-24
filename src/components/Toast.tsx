@@ -78,33 +78,14 @@ export function Toast({
             {title}
           </ToastTitle>
           <TouchableOpacity onPress={onClose}>
-            <X
-              size={16}
-              color={
-                toastVariant === "success"
-                  ? tokens.colors.green900
-                  : toastVariant === "error"
-                  ? tokens.colors.red900
-                  : toastVariant === "warning"
-                  ? tokens.colors.orange900
-                  : tokens.colors.blue900
-              }
-            />
+            <X size={16} color={tokens.colors.gray400} />
           </TouchableOpacity>
         </HStack>
         <ToastDescription
           flex={1}
           fontFamily={"$body"}
           fontSize={"$sm"}
-          color={
-            toastVariant === "success"
-              ? "$green800"
-              : toastVariant === "error"
-              ? "$red800"
-              : toastVariant === "warning"
-              ? "$orange800"
-              : "$blue800"
-          }
+          color={tokens.colors.gray200}
         >
           {description}
         </ToastDescription>

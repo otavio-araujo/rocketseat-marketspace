@@ -7,11 +7,12 @@ import { Avatar } from "./Avatar"
 
 import { api } from "@services/api"
 import { getRandomIntInclusive } from "@utils/MathUtils"
+import { ProductDTO } from "@dtos/ProductDTO"
 
 type Props = TouchableOpacityProps & {
   hasAvatar?: boolean
   handleOnClick?: () => void
-  productData: any
+  productData: ProductDTO
 }
 
 export function ProductCard({
@@ -20,10 +21,6 @@ export function ProductCard({
   productData,
   ...rest
 }: Props) {
-  const image =
-    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-  console.log(productData.product_images.length)
-
   const getRandomProductImage = () => {
     return productData.product_images[
       getRandomIntInclusive(0, productData.product_images.length - 1)
