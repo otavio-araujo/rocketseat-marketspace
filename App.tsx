@@ -1,4 +1,7 @@
-import { GestureHandlerRootView } from "react-native-gesture-handler"
+import {
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler"
 
 import {
   useFonts,
@@ -29,19 +32,17 @@ export default function App() {
   })
 
   return (
-    <Fragment>
-      <GluestackUIProvider config={config}>
-        <GestureHandlerRootView>
-          <StatusBar
-            barStyle="dark-content"
-            backgroundColor={tokens.colors.gray600}
-            translucent
-          />
-          <AuthContextProvider>
-            {fontsLoaded ? <Routes /> : <Loading />}
-          </AuthContextProvider>
-        </GestureHandlerRootView>
-      </GluestackUIProvider>
-    </Fragment>
+    <GluestackUIProvider config={config}>
+      <GestureHandlerRootView>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor={tokens.colors.gray600}
+          translucent
+        />
+        <AuthContextProvider>
+          {fontsLoaded ? <Routes /> : <Loading />}
+        </AuthContextProvider>
+      </GestureHandlerRootView>
+    </GluestackUIProvider>
   )
 }

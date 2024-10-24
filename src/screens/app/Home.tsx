@@ -41,32 +41,37 @@ import { useAuth } from "@hooks/useAuth"
 import { api } from "@services/api"
 import { AppError } from "@utils/AppError"
 
+import { ProductDTO } from "@dtos/ProductDTO"
+
 import { Badge } from "@components/Badge"
 import { Toast } from "@components/Toast"
 import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { Checkbox } from "@components/Checkbox"
 import { ProductCard } from "@components/ProductCard"
-import { ProductDTO } from "@dtos/ProductDTO"
 
 export function Home() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+  const { user } = useAuth()
 
   const { tokens } = gluestackUIConfig
+
   const toast = useToast()
-  const [payments, setPayments] = useState([
-    "boleto",
-    "pix",
-    "cartao",
-    "deposito",
-    "dinheiro",
-  ])
+
   const [adsList, setAdsList] = useState<ProductDTO[]>([] as ProductDTO[])
   const [userTotalActiveAds, setUserTotalActiveAds] = useState(0)
+  const [paymentQuery, setPaymentQuery] = useState("")
+  const [payments, setPayments] = useState<string[]>([
+    "pix",
+    "boleto",
+    "cash",
+    "deposit",
+    "card",
+  ])
+  const [isNew, setIsNew] = useState<boolean>(true)
+  const [acceptTrade, setAcceptTrade] = useState<boolean>(false)
+  const modalRef = useRef(null)
   const [showModal, setShowModal] = useState(false)
-  const [isExchangeable, setIsExchangeable] = useState<boolean>(false)
-  const { user } = useAuth()
-  const ref = useRef(null)
 
   function handleGoToAdDetails() {
     navigation.navigate("adDetails")
@@ -117,8 +122,65 @@ export function Home() {
 
       const description = isAppError
         ? error.message
-        : "Não foi possível carregar os anúncios do usuário logado."
+        : "Não foi possível carregar o total de anúncios do usuário logado."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Total de anúncios do usuário logado."
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
     }
+  }
+
+  async function handleApplyFilters() {
+    let payment_methods = ""
+
+    payments.map(
+      (payment) => (payment_methods += `&payment_methods=${payment}`)
+    )
+
+    const query = `?is_new=${isNew}&accept_trade=${acceptTrade}&${payment_methods}`
+
+    try {
+      const { data } = await api.get(`/products/${query}`)
+
+      setAdsList(data)
+      setShowModal(false)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Não foi possível carregar os anúncios."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Anúncios"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
+  function handleResetFilters() {
+    setIsNew(true)
+    setAcceptTrade(false)
+    setPayments(["pix", "boleto", "cash", "deposit", "card"])
+    setShowModal(false)
+    fetchProducts()
   }
 
   useFocusEffect(
@@ -233,7 +295,7 @@ export function Home() {
               />
             </TouchableOpacity>
             <Divider orientation="vertical" bg="$gray400" h={18} w={1} />
-            <TouchableOpacity onPress={() => setShowModal(true)} ref={ref}>
+            <TouchableOpacity onPress={() => setShowModal(true)} ref={modalRef}>
               <Sliders
                 color={tokens.colors.gray200}
                 size={tokens.space[5]}
@@ -277,7 +339,6 @@ export function Home() {
         onClose={() => {
           setShowModal(false)
         }}
-        finalFocusRef={ref}
       >
         <ModalBackdrop />
         <ModalContent
@@ -305,8 +366,21 @@ export function Home() {
                 Condição
               </Text>
               <HStack gap={"$3"}>
-                <Badge label="Novo" badgeVariant="primaryLight" hasIcon />
-                <Badge label="Usado" badgeVariant="muted" />
+                <TouchableOpacity onPress={() => setIsNew(true)}>
+                  <Badge
+                    label="Novo"
+                    badgeVariant={isNew ? "primaryLight" : "muted"}
+                    hasIcon={isNew ? true : false}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => setIsNew(false)}>
+                  <Badge
+                    label="Usado"
+                    badgeVariant={isNew ? "muted" : "primaryLight"}
+                    hasIcon={isNew ? false : true}
+                  />
+                </TouchableOpacity>
               </HStack>
             </VStack>
 
@@ -315,7 +389,7 @@ export function Home() {
                 Aceita troca?
               </Text>
               <HStack
-                bg={isExchangeable ? "$blueLight" : "$gray500"}
+                bg={acceptTrade ? "$blueLight" : "$gray500"}
                 minHeight={"$8"}
                 maxHeight={"$8"}
                 rounded="$full"
@@ -324,7 +398,8 @@ export function Home() {
                 m={"$0"}
               >
                 <Switch
-                  onChange={() => setIsExchangeable(!isExchangeable)}
+                  onChange={() => setAcceptTrade(!acceptTrade)}
+                  value={acceptTrade}
                   p={"$0"}
                   m={"$0"}
                   sx={{
@@ -359,9 +434,9 @@ export function Home() {
                 <VStack gap={"$2"}>
                   <Checkbox label="Boleto" value="boleto" />
                   <Checkbox label="Pix" value="pix" />
-                  <Checkbox label="Dinheiro" value="dinheiro" />
-                  <Checkbox label="Cartão de credito" value="cartao" />
-                  <Checkbox label="Depósito bancário" value="deposito" />
+                  <Checkbox label="Dinheiro" value="cash" />
+                  <Checkbox label="Cartão de credito" value="card" />
+                  <Checkbox label="Depósito bancário" value="deposit" />
                 </VStack>
               </CheckboxGroup>
             </VStack>
@@ -371,9 +446,9 @@ export function Home() {
               <Button
                 label="Resetar filtros"
                 buttonVariant="muted"
-                onPress={() => {}}
+                onPress={handleResetFilters}
               />
-              <Button label="Aplicar filtros" onPress={() => {}} />
+              <Button label="Aplicar filtros" onPress={handleApplyFilters} />
             </HStack>
           </ModalFooter>
         </ModalContent>
