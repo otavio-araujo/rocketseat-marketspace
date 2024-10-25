@@ -35,8 +35,6 @@ export function ProductCarousel({
     })
   }
 
-  console.log(data)
-
   return (
     <View minHeight={250} position="relative" {...rest}>
       <Carousel

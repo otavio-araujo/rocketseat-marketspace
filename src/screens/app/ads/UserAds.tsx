@@ -1,7 +1,14 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 
-import { FlatList, HStack, Text, VStack, useToast } from "@gluestack-ui/themed"
+import {
+  FlatList,
+  HStack,
+  Text,
+  VStack,
+  set,
+  useToast,
+} from "@gluestack-ui/themed"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -22,6 +29,7 @@ export function UserAds() {
   const adStatuses = ["todos", "ativos", "desativados"]
   const [adStatus, setAdStatus] = useState("todos")
   const [adsList, setAdsList] = useState<ProductDTO[]>([] as ProductDTO[])
+  const [userTotalActiveAds, setUserTotalActiveAds] = useState(0)
 
   function handleUserAdDetail() {
     navigation.navigate("userAdDetail")
@@ -35,7 +43,20 @@ export function UserAds() {
     try {
       const { data } = await api.get("/users/products")
 
-      setAdsList(data)
+      if (adStatus === "ativos") {
+        setAdsList(data.filter((ad: any) => ad.is_active))
+        setUserTotalActiveAds(data.filter((ad: any) => ad.is_active).length)
+      }
+
+      if (adStatus === "desativados") {
+        setAdsList(data.filter((ad: any) => !ad.is_active))
+        setUserTotalActiveAds(data.filter((ad: any) => !ad.is_active).length)
+      }
+
+      if (adStatus === "todos") {
+        setAdsList(data)
+        setUserTotalActiveAds(data.length)
+      }
     } catch (error) {
       const isAppError = error instanceof AppError
 
@@ -65,7 +86,7 @@ export function UserAds() {
   useFocusEffect(
     useCallback(() => {
       fetchProducts()
-    }, [])
+    }, [adStatus])
   )
 
   return (
@@ -83,7 +104,7 @@ export function UserAds() {
         alignItems="center"
         px={"$6"}
       >
-        <Text flex={1}>9 anúncios</Text>
+        <Text flex={1}>{userTotalActiveAds} anúncios</Text>
         <Selectbox
           selectedValue="todos"
           values={adStatuses}

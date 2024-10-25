@@ -47,8 +47,6 @@ export function AdDetails() {
   const toast = useToast()
   const { tokens } = gluestackUIConfig
 
-  console.log(productItem)
-
   function handleGoBack() {
     navigation.goBack()
   }

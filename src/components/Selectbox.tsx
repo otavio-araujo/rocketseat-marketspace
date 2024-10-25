@@ -46,7 +46,12 @@ export function Selectbox({ selectedValue, values, ...rest }: SelectboxProps) {
             <SelectDragIndicator />
           </SelectDragIndicatorWrapper>
           {values.map((value) => (
-            <SelectItem key={value} label={value} value={value} />
+            <SelectItem
+              key={value}
+              textStyle={{ textTransform: "capitalize" }}
+              label={value}
+              value={value}
+            />
           ))}
           {/* <SelectItem label="Todos" value="todos" />
           <SelectItem label="Ativos" value="ativos" />
