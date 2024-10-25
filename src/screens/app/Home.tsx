@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { FlatList, Platform, TouchableOpacity } from "react-native"
+import { FlatList, Keyboard, Platform, TouchableOpacity } from "react-native"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import {
   Icon,
@@ -70,6 +70,8 @@ export function Home() {
   ])
   const [isNew, setIsNew] = useState<boolean>(true)
   const [acceptTrade, setAcceptTrade] = useState<boolean>(false)
+  const [searchQuery, setSearchQuery] = useState<string>("")
+
   const modalRef = useRef(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -140,13 +142,19 @@ export function Home() {
   }
 
   async function handleApplyFilters() {
+    Keyboard.dismiss()
+
     let payment_methods = ""
 
     payments.map(
       (payment) => (payment_methods += `&payment_methods=${payment}`)
     )
-
-    const query = `?is_new=${isNew}&accept_trade=${acceptTrade}&${payment_methods}`
+    let query = ""
+    if (searchQuery !== "") {
+      query = `?is_new=${isNew}&accept_trade=${acceptTrade}&${payment_methods}&query=${searchQuery}`
+    } else {
+      query = `?is_new=${isNew}&accept_trade=${acceptTrade}&${payment_methods}`
+    }
 
     try {
       const { data } = await api.get(`/products/${query}`)
@@ -180,6 +188,7 @@ export function Home() {
     setAcceptTrade(false)
     setPayments(["pix", "boleto", "cash", "deposit", "card"])
     setShowModal(false)
+    setSearchQuery("")
     fetchProducts()
   }
 
@@ -284,10 +293,12 @@ export function Home() {
               fontFamily={"$body"}
               color="$gray200"
               fontSize={"$md"}
+              onChangeText={setSearchQuery}
+              value={searchQuery}
             />
           </Input>
           <HStack alignItems="center" gap={"$3"}>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={handleApplyFilters}>
               <MagnifyingGlass
                 color={tokens.colors.gray200}
                 size={tokens.space[5]}
