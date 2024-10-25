@@ -75,8 +75,10 @@ export function Home() {
   const modalRef = useRef(null)
   const [showModal, setShowModal] = useState(false)
 
-  function handleGoToAdDetails() {
-    navigation.navigate("adDetails")
+  async function handleGoToAdDetails(productId: string) {
+    const { data } = await api.get(`/products/${productId}`)
+    const productItem: ProductDTO = data
+    navigation.navigate("adDetails", { productItem })
   }
 
   function handleGoToAdCreate() {
@@ -324,7 +326,7 @@ export function Home() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <ProductCard
-            onPress={handleGoToAdDetails}
+            onPress={() => handleGoToAdDetails(item.id)}
             hasAvatar
             productData={item}
           />

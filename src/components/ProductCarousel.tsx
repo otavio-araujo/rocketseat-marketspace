@@ -8,10 +8,11 @@ import { useSharedValue } from "react-native-reanimated"
 
 import { Box, Image, Text, View } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"
-import { AdDetails } from "@screens/app/ads/AdDetails"
+import { ProductImageDTO } from "@dtos/ProductImageDTO"
+import { api } from "@services/api"
 
 type CarouselProps = React.ComponentProps<typeof View> & {
-  data: AdDetails[]
+  data: ProductImageDTO[]
   isActive?: boolean
 }
 
@@ -33,6 +34,9 @@ export function ProductCarousel({
       animated: true,
     })
   }
+
+  console.log(data)
+
   return (
     <View minHeight={250} position="relative" {...rest}>
       <Carousel
@@ -55,8 +59,8 @@ export function ProductCarousel({
           >
             <Image
               position="relative"
-              source={{ uri: item.uri }}
-              alt={item.title}
+              source={{ uri: `${api.defaults.baseURL}/images/${item.path}` }}
+              alt="Foto do produto"
               style={{ width: "100%", height: "100%" }}
               resizeMode="cover"
             />

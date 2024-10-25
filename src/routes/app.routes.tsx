@@ -7,6 +7,7 @@ import { AdCreate } from "@screens/app/ads/AdCreate"
 import { AdDetails } from "@screens/app/ads/AdDetails"
 import { AdPreview } from "@screens/app/ads/AdPreview"
 import { UserAdDetail } from "@screens/app/ads/UserAdDetail"
+import { ProductDTO } from "@dtos/ProductDTO"
 
 export type AppRoutes = {
   home: undefined
@@ -14,7 +15,9 @@ export type AppRoutes = {
   userAds: undefined
   logout: undefined
   adCreate: undefined
-  adDetails: undefined
+  adDetails: {
+    productItem: ProductDTO
+  }
   adPreview: undefined
   userAdDetail: undefined
 }

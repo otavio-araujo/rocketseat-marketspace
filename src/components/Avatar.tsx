@@ -43,16 +43,16 @@ export function Avatar({
       alignItems="center"
       bgColor="$gray500"
       minHeight={
-        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$6"
+        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$8"
       }
       maxHeight={
-        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$6"
+        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$8"
       }
       minWidth={
-        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$6"
+        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$8"
       }
       maxWidth={
-        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$6"
+        isEditable ? "$22" : isCardAd ? "$8" : isWelcomeAvatar ? "$14" : "$8"
       }
       style={{
         borderWidth: isEditable ? 3 : isCardAd || isWelcomeAvatar ? 1 : 2,

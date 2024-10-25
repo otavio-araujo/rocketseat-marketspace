@@ -1,5 +1,10 @@
-import { Platform } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useCallback, useEffect, useState } from "react"
+import { Linking, Platform } from "react-native"
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native"
 
 import { AppError } from "@utils/AppError"
 
@@ -14,7 +19,11 @@ import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
+import { api } from "@services/api"
+import { ProductDTO } from "@dtos/ProductDTO"
+
 import { Badge } from "@components/Badge"
+import { Toast } from "@components/Toast"
 import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { Header } from "@components/Header"
@@ -27,63 +36,51 @@ import Barcode from "phosphor-react-native/src/icons/Barcode"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
 import WhatsappLogo from "phosphor-react-native/src/icons/WhatsappLogo"
 
-export type AdDetails = {
-  id: number
-  uri: string
-  title: string
+type RouteParamsProps = {
+  productItem: ProductDTO
 }
 
 export function AdDetails() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+  const { productItem } = useRoute().params as RouteParamsProps
+
+  const toast = useToast()
   const { tokens } = gluestackUIConfig
 
-  const images: AdDetails[] = [
-    {
-      id: 0,
-      uri: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "HeadPhones",
-    }, // https://unsplash.com/photos/Jup6QMQdLnM
-    {
-      id: 1,
-      uri: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?q=80&w=2022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "PlayStation5",
-    }, // https://unsplash.com/photos/oO62CP-g1EA
-    {
-      id: 2,
-      uri: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Cocooil",
-    }, // https://unsplash.com/photos/gKMmJEvcyA8
-  ]
+  console.log(productItem)
 
   function handleGoBack() {
     navigation.goBack()
   }
+
   return (
     /* Container */
     <VStack pt={Platform.OS === "android" ? "$12" : "$16"} flex={1}>
-      <Header
-        handleCreateAd={() => {}}
-        handleEditAd={() => {}}
-        headerVariant="simple"
-        onPress={handleGoBack}
-        title="Criar anúncio"
-      />
+      <Header headerVariant="simple" onPress={handleGoBack} />
 
-      <ProductCarousel data={images} mt={"$3"} />
+      <ProductCarousel
+        data={productItem.product_images}
+        mt={"$3"}
+        isActive={productItem.is_active}
+      />
 
       {/* Content */}
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack w={"$full"} px={"$6"} mt={"$5"} gap={"$6"}>
           <HStack alignItems="center">
-            <Avatar imageSource="https://i.pravatar.cc/300" />
-            <Text fontFamily={"$body"} fontSize={"$sm"} ml={"$2"}>
-              Maria Gomes{" "}
+            <Avatar imageSource={productItem.user.avatar} />
+            <Text fontFamily={"$body"} fontSize={"$md"} ml={"$2"}>
+              {productItem.user.name}
             </Text>
           </HStack>
 
           <VStack alignItems="flex-start" gap={"$2"}>
             <HStack>
-              <Badge badgeVariant="muted" label="usado" mx={"auto"} />
+              <Badge
+                badgeVariant="muted"
+                label={productItem.is_new ? "novo" : "usado"}
+                mx={"auto"}
+              />
             </HStack>
 
             <HStack
@@ -92,7 +89,7 @@ export function AdDetails() {
               alignItems="center"
             >
               <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
-                Luminária pendente
+                {productItem.name}
               </Text>
               <HStack alignItems="baseline">
                 <Text
@@ -107,14 +104,13 @@ export function AdDetails() {
                   fontSize={"$lg"}
                   color={"$blueLight"}
                 >
-                  45,00
+                  {(productItem.price / 100).toFixed(2)}
                 </Text>
               </HStack>
             </HStack>
 
             <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Cras congue cursus in tortor sagittis placerat nunc, tellus arcu.
-              Vitae ante leo eget maecenas urna mattis cursus.
+              {productItem.description}
             </Text>
           </VStack>
 
@@ -123,7 +119,7 @@ export function AdDetails() {
               Aceita troca?
             </Text>
             <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Não
+              {productItem.accept_trade ? "Sim" : "Não"}
             </Text>
           </HStack>
 
@@ -132,61 +128,33 @@ export function AdDetails() {
               Meios de pagamento:{" "}
             </Text>
 
-            <HStack w={"$full"} gap={"$2"}>
-              <Barcode size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Boleto
-              </Text>
-            </HStack>
-            <HStack w={"$full"} gap={"$2"}>
-              <QrCode size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Pix
-              </Text>
-            </HStack>
-            <HStack w={"$full"} gap={"$2"}>
-              <Money size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Dinheiro
-              </Text>
-            </HStack>
-            <HStack w={"$full"} gap={"$2"}>
-              <CreditCard size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Caratão de Crédito
-              </Text>
-            </HStack>
-            <HStack w={"$full"} gap={"$2"}>
-              <Bank size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Depósito Bancário
-              </Text>
-            </HStack>
+            {productItem.payment_methods.map((method) => (
+              <HStack w={"$full"} gap={"$2"} key={method.key}>
+                {method.key === "boleto" && (
+                  <Barcode size={18} color={tokens.colors.gray100} />
+                )}
+                {method.key === "pix" && (
+                  <QrCode size={18} color={tokens.colors.gray100} />
+                )}
+                {method.key === "cash" && (
+                  <Money size={18} color={tokens.colors.gray100} />
+                )}
+                {method.key === "card" && (
+                  <CreditCard size={18} color={tokens.colors.gray100} />
+                )}
+                {method.key === "deposit" && (
+                  <Bank size={18} color={tokens.colors.gray100} />
+                )}
+                <Text
+                  textTransform="capitalize"
+                  fontFamily={"$body"}
+                  fontSize={"$sm"}
+                  color={"$gray200"}
+                >
+                  {method.name}
+                </Text>
+              </HStack>
+            ))}
           </VStack>
         </VStack>
       </ScrollView>
@@ -209,7 +177,7 @@ export function AdDetails() {
             R${" "}
           </Text>
           <Text fontFamily="$heading" fontSize={"$xl"} color={"$blue"}>
-            45,00
+            {(productItem.price / 100).toFixed(2)}
           </Text>
         </HStack>
         <Button
@@ -217,6 +185,9 @@ export function AdDetails() {
           label="Entrar em contato"
           icon={WhatsappLogo}
           mt={"$6"}
+          onPress={() =>
+            Linking.openURL(`https://wa.me/${productItem.user.tel}`)
+          }
         />
       </HStack>
       {/* End - Footer */}
