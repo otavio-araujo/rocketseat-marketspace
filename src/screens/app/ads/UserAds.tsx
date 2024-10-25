@@ -31,8 +31,10 @@ export function UserAds() {
   const [adsList, setAdsList] = useState<ProductDTO[]>([] as ProductDTO[])
   const [userTotalActiveAds, setUserTotalActiveAds] = useState(0)
 
-  function handleUserAdDetail() {
-    navigation.navigate("userAdDetail")
+  async function handleUserAdDetail(productId: string) {
+    const { data } = await api.get(`/products/${productId}`)
+    const productItem: ProductDTO = data
+    navigation.navigate("userAdDetail", { productItem })
   }
 
   function handleGoToAdCreate() {
@@ -117,9 +119,9 @@ export function UserAds() {
       <FlatList
         data={adsList}
         keyExtractor={(item: any) => item.id.toString()}
-        renderItem={({ item }) => (
+        renderItem={({ item }: any) => (
           <ProductCard
-            onPress={() => handleUserAdDetail()}
+            onPress={() => handleUserAdDetail(item.id)}
             productData={item as ProductDTO}
           />
         )}

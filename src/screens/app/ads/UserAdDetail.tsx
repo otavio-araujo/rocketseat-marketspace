@@ -1,10 +1,18 @@
-import { useState } from "react"
-import { useNavigation } from "@react-navigation/native"
+import { Platform } from "react-native"
+import { useCallback, useEffect, useState } from "react"
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native"
 
 import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
-import { VStack, Text, HStack } from "@gluestack-ui/themed"
+import { VStack, Text, HStack, useToast } from "@gluestack-ui/themed"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
+
+import { ProductDTO } from "@dtos/ProductDTO"
+import { ProductImageDTO } from "@dtos/ProductImageDTO"
 
 import { Badge } from "@components/Badge"
 import { Avatar } from "@components/Avatar"
@@ -12,12 +20,13 @@ import { Button } from "@components/Button"
 import { Header } from "@components/Header"
 import { ProductCarousel } from "@components/ProductCarousel"
 
-import Barcode from "phosphor-react-native/src/icons/Barcode"
-import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Bank from "phosphor-react-native/src/icons/Bank"
 import Power from "phosphor-react-native/src/icons/Power"
+import Money from "phosphor-react-native/src/icons/Money"
+import QrCode from "phosphor-react-native/src/icons/QrCode"
+import Barcode from "phosphor-react-native/src/icons/Barcode"
+import CreditCard from "phosphor-react-native/src/icons/CreditCard"
 import TrashSimple from "phosphor-react-native/src/icons/TrashSimple"
-import { Platform } from "react-native"
 
 export type AdDetails = {
   id: number
@@ -25,33 +34,42 @@ export type AdDetails = {
   title: string
 }
 
+type RouteParamsProps = {
+  productItem: ProductDTO
+}
+
 export function UserAdDetail() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  const toast = useToast()
+
   const { tokens } = gluestackUIConfig
+
+  const { productItem } = useRoute().params as RouteParamsProps
+
+  console.log(productItem)
 
   const [isActive, setIsActive] = useState(true)
 
-  const images: AdDetails[] = [
+  const images: ProductImageDTO[] = [
     {
-      id: 0,
-      uri: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "HeadPhones",
+      id: "0",
+      path: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     }, // https://unsplash.com/photos/Jup6QMQdLnM
     {
-      id: 1,
-      uri: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?q=80&w=2022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "PlayStation5",
+      id: "1",
+      path: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?q=80&w=2022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     }, // https://unsplash.com/photos/oO62CP-g1EA
     {
-      id: 2,
-      uri: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Cocooil",
+      id: "2",
+      path: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     }, // https://unsplash.com/photos/gKMmJEvcyA8
   ]
 
   function handleGoBack() {
     navigation.goBack()
   }
+
   return (
     <VStack pt={Platform.OS === "android" ? "$8" : "$12"}>
       <Header
@@ -61,20 +79,27 @@ export function UserAdDetail() {
         onPress={handleGoBack}
         title="Criar anúncio"
       />
-
-      <ProductCarousel data={images} mt={"$3"} isActive={isActive} />
+      <ProductCarousel
+        data={productItem.product_images}
+        mt={"$3"}
+        isActive={isActive}
+      />
 
       <VStack w={"$full"} px={"$6"} mt={"$5"} pb={"$7"} gap={"$6"}>
         <HStack alignItems="center">
-          <Avatar imageSource="https://i.pravatar.cc/300" />
-          <Text fontFamily={"$body"} fontSize={"$sm"} ml={"$2"}>
-            Maria Gomes{" "}
+          <Avatar imageSource={productItem.user.avatar} />
+          <Text fontFamily={"$body"} fontSize={"$md"} ml={"$2"}>
+            {productItem.user.name}
           </Text>
         </HStack>
 
         <VStack alignItems="flex-start" gap={"$2"}>
           <HStack>
-            <Badge badgeVariant="muted" label="usado" mx={"auto"} />
+            <Badge
+              badgeVariant="muted"
+              label={productItem.is_new ? "novo" : "usado"}
+              mx={"auto"}
+            />
           </HStack>
 
           <HStack
@@ -83,7 +108,7 @@ export function UserAdDetail() {
             alignItems="center"
           >
             <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
-              Luminária pendente
+              {productItem.name}
             </Text>
             <HStack alignItems="baseline">
               <Text
@@ -98,14 +123,13 @@ export function UserAdDetail() {
                 fontSize={"$lg"}
                 color={"$blueLight"}
               >
-                45,00
+                {(productItem.price / 100).toFixed(2)}
               </Text>
             </HStack>
           </HStack>
 
           <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-            Cras congue cursus in tortor sagittis placerat nunc, tellus arcu.
-            Vitae ante leo eget maecenas urna mattis cursus.
+            {productItem.description}
           </Text>
         </VStack>
 
@@ -114,7 +138,7 @@ export function UserAdDetail() {
             Aceita troca?
           </Text>
           <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-            Não
+            {productItem.accept_trade ? "Sim" : "Não"}
           </Text>
         </HStack>
 
@@ -123,24 +147,33 @@ export function UserAdDetail() {
             Meios de pagamento:{" "}
           </Text>
 
-          <HStack w={"$full"} gap={"$2"}>
-            <Barcode size={18} color={tokens.colors.gray100} />
-            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Boleto
-            </Text>
-          </HStack>
-          <HStack w={"$full"} gap={"$2"}>
-            <QrCode size={18} color={tokens.colors.gray100} />
-            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Pix
-            </Text>
-          </HStack>
-          <HStack w={"$full"} gap={"$2"}>
-            <Bank size={18} color={tokens.colors.gray100} />
-            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Depósito Bancário
-            </Text>
-          </HStack>
+          {productItem.payment_methods.map((method) => (
+            <HStack w={"$full"} gap={"$2"} key={method.key}>
+              {method.key === "boleto" && (
+                <Barcode size={18} color={tokens.colors.gray100} />
+              )}
+              {method.key === "pix" && (
+                <QrCode size={18} color={tokens.colors.gray100} />
+              )}
+              {method.key === "cash" && (
+                <Money size={18} color={tokens.colors.gray100} />
+              )}
+              {method.key === "card" && (
+                <CreditCard size={18} color={tokens.colors.gray100} />
+              )}
+              {method.key === "deposit" && (
+                <Bank size={18} color={tokens.colors.gray100} />
+              )}
+              <Text
+                textTransform="capitalize"
+                fontFamily={"$body"}
+                fontSize={"$sm"}
+                color={"$gray200"}
+              >
+                {method.name}
+              </Text>
+            </HStack>
+          ))}
         </VStack>
 
         <VStack w={"$full"} gap={"$2"}>

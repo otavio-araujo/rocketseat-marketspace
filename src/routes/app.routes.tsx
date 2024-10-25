@@ -19,7 +19,9 @@ export type AppRoutes = {
     productItem: ProductDTO
   }
   adPreview: undefined
-  userAdDetail: undefined
+  userAdDetail: {
+    productItem: ProductDTO
+  }
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>

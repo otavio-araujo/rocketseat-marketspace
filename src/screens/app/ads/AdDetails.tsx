@@ -23,7 +23,6 @@ import { api } from "@services/api"
 import { ProductDTO } from "@dtos/ProductDTO"
 
 import { Badge } from "@components/Badge"
-import { Toast } from "@components/Toast"
 import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { Header } from "@components/Header"
