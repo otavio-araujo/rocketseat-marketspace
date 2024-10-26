@@ -78,6 +78,20 @@ export function UserAdDetail() {
       const response = await api.patch(`/products/${product.id}`, {
         is_active: !product.is_active,
       })
+      if (response.status === 204) {
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <Toast
+              id={id}
+              title="Visibilidade do anúncio"
+              toastVariant="success"
+              description="Visibilidade do anúncio alterada com sucesso."
+              onClose={() => toast.close(id)}
+            />
+          ),
+        })
+      }
 
       const { data } = await api.get(`/products/${product.id}`)
 
