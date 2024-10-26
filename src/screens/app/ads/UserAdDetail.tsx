@@ -27,6 +27,9 @@ import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Barcode from "phosphor-react-native/src/icons/Barcode"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
 import TrashSimple from "phosphor-react-native/src/icons/TrashSimple"
+import { AppError } from "@utils/AppError"
+import { Toast } from "@components/Toast"
+import { api } from "@services/api"
 
 export type AdDetails = {
   id: number
@@ -35,7 +38,8 @@ export type AdDetails = {
 }
 
 type RouteParamsProps = {
-  productItem: ProductDTO
+  productItem?: ProductDTO
+  updatedProduct?: ProductDTO
 }
 
 export function UserAdDetail() {
@@ -45,11 +49,9 @@ export function UserAdDetail() {
 
   const { tokens } = gluestackUIConfig
 
-  const { productItem } = useRoute().params as RouteParamsProps
+  const { productItem, updatedProduct } = useRoute().params as RouteParamsProps
 
-  console.log(productItem)
-
-  const [isActive, setIsActive] = useState(true)
+  const [product, setProduct] = useState<ProductDTO>(productItem as ProductDTO)
 
   const images: ProductImageDTO[] = [
     {
@@ -70,6 +72,50 @@ export function UserAdDetail() {
     navigation.goBack()
   }
 
+  async function handleIsActive() {
+    try {
+      console.log(product)
+      const response = await api.patch(`/products/${product.id}`, {
+        is_active: !product.is_active,
+      })
+
+      const { data } = await api.get(`/products/${product.id}`)
+
+      const updatedProduct: ProductDTO = data
+      setProduct(updatedProduct)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const description = isAppError
+        ? error.message
+        : "Não foi possível ativar ou desativar o anúncio."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Ativar ou desativar anúncio"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      if (productItem) {
+        setProduct(productItem)
+      }
+
+      if (updatedProduct) {
+        setProduct(updatedProduct)
+      }
+    }, [productItem])
+  )
+
   return (
     <VStack pt={Platform.OS === "android" ? "$8" : "$12"}>
       <Header
@@ -80,16 +126,16 @@ export function UserAdDetail() {
         title="Criar anúncio"
       />
       <ProductCarousel
-        data={productItem.product_images}
+        data={product.product_images}
         mt={"$3"}
-        isActive={isActive}
+        isActive={product.is_active}
       />
 
       <VStack w={"$full"} px={"$6"} mt={"$5"} pb={"$7"} gap={"$6"}>
         <HStack alignItems="center">
-          <Avatar imageSource={productItem.user.avatar} />
+          <Avatar imageSource={product.user.avatar} />
           <Text fontFamily={"$body"} fontSize={"$md"} ml={"$2"}>
-            {productItem.user.name}
+            {product.user.name}
           </Text>
         </HStack>
 
@@ -97,7 +143,7 @@ export function UserAdDetail() {
           <HStack>
             <Badge
               badgeVariant="muted"
-              label={productItem.is_new ? "novo" : "usado"}
+              label={product.is_new ? "novo" : "usado"}
               mx={"auto"}
             />
           </HStack>
@@ -108,7 +154,7 @@ export function UserAdDetail() {
             alignItems="center"
           >
             <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
-              {productItem.name}
+              {product.name}
             </Text>
             <HStack alignItems="baseline">
               <Text
@@ -123,13 +169,13 @@ export function UserAdDetail() {
                 fontSize={"$lg"}
                 color={"$blueLight"}
               >
-                {(productItem.price / 100).toFixed(2)}
+                {(product.price / 100).toFixed(2)}
               </Text>
             </HStack>
           </HStack>
 
           <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-            {productItem.description}
+            {product.description}
           </Text>
         </VStack>
 
@@ -138,7 +184,7 @@ export function UserAdDetail() {
             Aceita troca?
           </Text>
           <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-            {productItem.accept_trade ? "Sim" : "Não"}
+            {product.accept_trade ? "Sim" : "Não"}
           </Text>
         </HStack>
 
@@ -147,7 +193,7 @@ export function UserAdDetail() {
             Meios de pagamento:{" "}
           </Text>
 
-          {productItem.payment_methods.map((method) => (
+          {product.payment_methods.map((method) => (
             <HStack w={"$full"} gap={"$2"} key={method.key}>
               {method.key === "boleto" && (
                 <Barcode size={18} color={tokens.colors.gray100} />
@@ -177,19 +223,19 @@ export function UserAdDetail() {
         </VStack>
 
         <VStack w={"$full"} gap={"$2"}>
-          {isActive ? (
+          {product.is_active ? (
             <Button
               label="Desativar anúncio"
               buttonVariant="dark"
               icon={Power}
-              onPress={() => setIsActive(false)}
+              onPress={handleIsActive}
             />
           ) : (
             <Button
               label="Reativar anúncio"
               buttonVariant="primary"
               icon={Power}
-              onPress={() => setIsActive(true)}
+              onPress={handleIsActive}
             />
           )}
           <Button

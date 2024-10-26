@@ -20,7 +20,8 @@ export type AppRoutes = {
   }
   adPreview: undefined
   userAdDetail: {
-    productItem: ProductDTO
+    productItem?: ProductDTO
+    updatedProduct?: ProductDTO
   }
 }
 
