@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { Platform, ScrollView, TouchableOpacity } from "react-native"
+import * as yup from "yup"
 
 import {
   Box,
@@ -16,6 +17,8 @@ import {
   RadioLabel,
   CheckboxGroup,
   useToast,
+  FormControlError,
+  FormControl,
 } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
@@ -32,12 +35,29 @@ import { Header } from "@components/Header"
 import { Textarea } from "@components/Textarea"
 import { Checkbox } from "@components/Checkbox"
 import { ProductPhoto } from "@components/ProductPhoto"
+import { Controller, useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { FormControlErrorText } from "@gluestack-ui/themed"
 
 export type ProductPhotoProps = {
   id: number
   uri: string
   title: string
 }
+
+type FormData = {
+  name: string
+  description: string
+  price: number
+}
+
+const productSchema = yup.object({
+  name: yup.string().required("Nome do produto é obrigatório."),
+
+  description: yup.string().required("A descrição do produto é obrigatória."),
+
+  price: yup.number().required("O valor do produto é obrigatório."),
+})
 
 export function AdCreate() {
   const images: ProductPhotoProps[] = [
@@ -54,39 +74,43 @@ export function AdCreate() {
   const toast = useToast()
 
   const [payments, setPayments] = useState([])
-  const [isExchangeable, setIsExchangeable] = useState(false)
-  const [productCondition, setProductCondition] = useState("")
+  const [isNew, setIsNew] = useState<"novo" | "usado">("novo")
+  const [acceptTrade, setAcceptTrade] = useState(false)
 
-  function handleGoToAdPreview() {
-    navigation.navigate("adPreview")
-  }
-  function handleGoBack() {
-    navigation.goBack()
-  }
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(productSchema),
+  })
 
-  async function fetchPaymentMethods() {
-    try {
-      return null
-    } catch (error) {
-      const isAppError = error instanceof AppError
-      const description = isAppError
-        ? error.message
-        : "Não foi possível carregar os métodos de pagamento."
-
-      toast.show({
+  function handleGoToAdPreview(productData: FormData) {
+    if (payments.length < 1) {
+      return toast.show({
         placement: "top",
         render: ({ id }) => (
           <Toast
             id={id}
-            title="Métodos de pagamento"
-            toastVariant="error"
-            description={description}
+            title="Formas de pagamento"
+            toastVariant="warning"
+            description="Por favor, selecione pelo menos 1 forma de pagamento."
             onClose={() => toast.close(id)}
           />
         ),
       })
     }
+    console.log("Payment Methods: ", payments)
+    console.log("Accept Trade: ", acceptTrade)
+    console.log("É novo?: ", isNew)
+    console.log("Product Data: ", productData)
+
+    // navigation.navigate("adPreview")
   }
+  function handleGoBack() {
+    navigation.goBack()
+  }
+
   return (
     <VStack flex={1} gap={"$4"} pt={Platform.OS === "android" ? "$12" : "$16"}>
       {/* Header */}
@@ -143,11 +167,34 @@ export function AdCreate() {
               Sobre o produto
             </Text>
 
-            <Input placeholder="Título do anúncio" />
+            <Controller
+              control={control}
+              name="name"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  type="text"
+                  placeholder="Título do anúncio"
+                  onChangeText={onChange}
+                  value={value}
+                  errorMessages={errors.name?.message}
+                />
+              )}
+            />
 
-            <Textarea placeholder="Descrição do produto" />
+            <Controller
+              control={control}
+              name="description"
+              render={({ field: { onChange, value } }) => (
+                <Textarea
+                  placeholder="Descrição do anúncio"
+                  onChangeText={onChange}
+                  value={value}
+                  errorMessages={errors.name?.message}
+                />
+              )}
+            />
 
-            <RadioGroup value={productCondition} onChange={setProductCondition}>
+            <RadioGroup value={isNew} onChange={setIsNew}>
               <HStack gap={"$5"}>
                 <Radio value="novo">
                   <RadioIndicator mr="$2" $checked-borderColor="$blueLight">
@@ -190,10 +237,18 @@ export function AdCreate() {
               Vendas
             </Text>
 
-            <Input
-              placeholder="Valor do produto"
-              inputVariant="money"
-              keyboardType="numeric"
+            <Controller
+              control={control}
+              name="price"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Valor do produto"
+                  onChangeText={onChange}
+                  inputVariant="money"
+                  keyboardType="numeric"
+                  errorMessages={errors.price?.message}
+                />
+              )}
             />
 
             <VStack gap={"$3"}>
@@ -202,7 +257,7 @@ export function AdCreate() {
               </Text>
 
               <HStack
-                bg={isExchangeable ? "$blueLight" : "$gray500"}
+                bg={acceptTrade ? "$blueLight" : "$gray500"}
                 rounded="$full"
                 p={"$0"}
                 px={"$1"}
@@ -213,7 +268,7 @@ export function AdCreate() {
                 <Switch
                   p={"$0"}
                   m={"$0"}
-                  onChange={() => setIsExchangeable(!isExchangeable)}
+                  onChange={() => setAcceptTrade(!acceptTrade)}
                   sx={{
                     _light: {
                       props: {
@@ -247,9 +302,9 @@ export function AdCreate() {
                 <VStack gap={"$2"}>
                   <Checkbox label="Boleto" value="boleto" />
                   <Checkbox label="Pix" value="pix" />
-                  <Checkbox label="Dinheiro" value="dinheiro" />
-                  <Checkbox label="Cartão de crédito" value="cartao" />
-                  <Checkbox label="Depósito bancário" value="deposito" />
+                  <Checkbox label="Dinheiro" value="cash" />
+                  <Checkbox label="Cartão de crédito" value="card" />
+                  <Checkbox label="Depósito bancário" value="deposit" />
                 </VStack>
               </CheckboxGroup>
             </VStack>
@@ -282,7 +337,7 @@ export function AdCreate() {
           label="Avançar"
           mt={"$6"}
           flex={1}
-          onPress={handleGoToAdPreview}
+          onPress={handleSubmit(handleGoToAdPreview)}
         />
       </HStack>
     </VStack>
