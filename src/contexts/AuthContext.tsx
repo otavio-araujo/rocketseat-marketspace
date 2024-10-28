@@ -13,12 +13,18 @@ import {
   storageAuthTokenGet,
   storageAuthTokenRemove,
 } from "@storage/storageAuthToken"
+import { ProductDTO } from "@dtos/ProductDTO"
+import { ProductImageDTO } from "@dtos/ProductImageDTO"
 
 export type AuthContextDataProps = {
   user: UserDTO
+  productCreate: ProductDTO
+  productCreateImages: ProductImageDTO[]
   isLoadingUserStorageData: boolean
-  signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  signIn: (email: string, password: string) => Promise<void>
+  contextProductCreate: (product: ProductDTO) => void
+  contextProductCreateImages: (productImages: ProductImageDTO[]) => void
 }
 
 type AuthContextProviderProps = {
@@ -31,6 +37,13 @@ export const AuthContext = createContext<AuthContextDataProps>(
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
+  const [productCreate, setProductCreate] = useState<ProductDTO>(
+    {} as ProductDTO
+  )
+  const [productCreateImages, setProductCreateImages] = useState<
+    ProductImageDTO[]
+  >([] as ProductImageDTO[])
+
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true)
 
   async function loadUserData() {
@@ -53,6 +66,14 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   function userAndTokenUpdate(userData: UserDTO, token: string) {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`
     setUser(userData)
+  }
+
+  function contextProductCreate(product: ProductDTO) {
+    setProductCreate(product)
+  }
+
+  function contextProductCreateImages(productImages: ProductImageDTO[]) {
+    setProductCreateImages(productImages)
   }
 
   async function storageUserAndTokenSave(
@@ -115,7 +136,16 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user, signIn, isLoadingUserStorageData, signOut }}
+      value={{
+        user,
+        productCreate,
+        productCreateImages,
+        contextProductCreateImages,
+        contextProductCreate,
+        signIn,
+        isLoadingUserStorageData,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>

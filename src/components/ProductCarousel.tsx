@@ -14,11 +14,13 @@ import { api } from "@services/api"
 type CarouselProps = React.ComponentProps<typeof View> & {
   data: ProductImageDTO[]
   isActive?: boolean
+  isPreviewing?: boolean
 }
 
 export function ProductCarousel({
   data,
   isActive = true,
+  isPreviewing = false,
   ...rest
 }: CarouselProps) {
   const { tokens } = gluestackUIConfig
@@ -57,7 +59,11 @@ export function ProductCarousel({
           >
             <Image
               position="relative"
-              source={{ uri: `${api.defaults.baseURL}/images/${item.path}` }}
+              source={{
+                uri: isPreviewing
+                  ? item.path
+                  : `${api.defaults.baseURL}/images/${item.path}`,
+              }}
               alt="Foto do produto"
               style={{ width: "100%", height: "100%" }}
               resizeMode="cover"

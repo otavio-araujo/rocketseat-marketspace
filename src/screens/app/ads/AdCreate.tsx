@@ -1,7 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import * as FileSystem from "expo-file-system"
+import * as ImagePicker from "expo-image-picker"
 import { useNavigation } from "@react-navigation/native"
 import { Platform, ScrollView, TouchableOpacity } from "react-native"
+
 import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 import {
   Box,
@@ -17,12 +21,13 @@ import {
   RadioLabel,
   CheckboxGroup,
   useToast,
-  FormControlError,
-  FormControl,
 } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
 import { AppError } from "@utils/AppError"
+
+import { api } from "@services/api"
+import { ProductImageDTO } from "@dtos/ProductImageDTO"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -36,14 +41,8 @@ import { Textarea } from "@components/Textarea"
 import { Checkbox } from "@components/Checkbox"
 import { ProductPhoto } from "@components/ProductPhoto"
 import { Controller, useForm } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { FormControlErrorText } from "@gluestack-ui/themed"
-
-export type ProductPhotoProps = {
-  id: number
-  uri: string
-  title: string
-}
+import { useAuth } from "@hooks/useAuth"
+import { ProductDTO } from "@dtos/ProductDTO"
 
 type FormData = {
   name: string
@@ -60,22 +59,20 @@ const productSchema = yup.object({
 })
 
 export function AdCreate() {
-  const images: ProductPhotoProps[] = [
-    {
-      id: 0,
-      uri: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "HeadPhones",
-    }, // https://unsplash.com/photos/Jup6QMQdLnM
-  ]
-
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
   const { tokens } = gluestackUIConfig
   const toast = useToast()
 
+  const { contextProductCreate, contextProductCreateImages } = useAuth()
+
   const [payments, setPayments] = useState([])
   const [isNew, setIsNew] = useState<"novo" | "usado">("novo")
   const [acceptTrade, setAcceptTrade] = useState(false)
+
+  const [productImages, setProductImages] = useState<ProductImageDTO[]>(
+    [] as ProductImageDTO[]
+  )
 
   const {
     control,
@@ -85,7 +82,26 @@ export function AdCreate() {
     resolver: yupResolver(productSchema),
   })
 
-  function handleGoToAdPreview(productData: FormData) {
+  function handleGoBack() {
+    navigation.goBack()
+  }
+
+  async function handleGoToAdPreview(productData: FormData) {
+    if (productImages.length === 0) {
+      return toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Fotos do produto"
+            toastVariant="warning"
+            description="Por favor, selecione pelo menos uma foto do produto."
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+
     if (payments.length < 1) {
       return toast.show({
         placement: "top",
@@ -100,15 +116,75 @@ export function AdCreate() {
         ),
       })
     }
-    console.log("Payment Methods: ", payments)
-    console.log("Accept Trade: ", acceptTrade)
-    console.log("É novo?: ", isNew)
-    console.log("Product Data: ", productData)
 
-    // navigation.navigate("adPreview")
+    const is_new = isNew === "novo" ? true : false
+
+    const productCreate: ProductDTO = {
+      name: productData.name,
+      description: productData.description,
+      price: productData.price,
+      is_new: is_new,
+      accept_trade: acceptTrade,
+      payment_methods: payments,
+    }
+
+    contextProductCreate(productCreate)
+    contextProductCreateImages(productImages)
+
+    navigation.navigate("adPreview")
   }
-  function handleGoBack() {
-    navigation.goBack()
+
+  async function handleProductImageSelect() {
+    try {
+      const productImageSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      })
+
+      if (productImageSelected.canceled) {
+        return
+      }
+
+      const photoSelected = productImageSelected.assets[0]
+
+      if (photoSelected.uri) {
+        const fileInfo = (await FileSystem.getInfoAsync(photoSelected.uri)) as {
+          size: number
+        }
+
+        if (fileInfo.size && fileInfo.size / (1024 * 1024) > 6) {
+          return toast.show({
+            placement: "top",
+            render: ({ id }) => (
+              <Toast
+                id={id}
+                title="Foto de perfil"
+                toastVariant="error"
+                description="A imagem não pode ter mais que 5MB."
+                onClose={() => toast.close(id)}
+              />
+            ),
+          })
+        }
+
+        const newProductImage: ProductImageDTO = {
+          id: `${Date.now()}`,
+          path: photoSelected.uri,
+        } as ProductImageDTO
+
+        setProductImages((prevState) => [...prevState, newProductImage])
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  function handleRemoveProductImage(id: string) {
+    setProductImages((prevState) =>
+      prevState.filter((image) => image.id !== id)
+    )
   }
 
   return (
@@ -139,12 +215,18 @@ export function AdCreate() {
             </Text>
 
             <HStack mt={"$4"} gap={"$2"}>
-              {images.map((image) => (
-                <ProductPhoto photo={image} key={image.id} />
+              {productImages.map((image) => (
+                <ProductPhoto
+                  photo={image}
+                  key={image.id}
+                  handleRemoveProductImage={() =>
+                    handleRemoveProductImage(image.id)
+                  }
+                />
               ))}
 
-              {images.length < 3 && (
-                <TouchableOpacity>
+              {productImages.length < 3 && (
+                <TouchableOpacity onPress={handleProductImageSelect}>
                   <Box
                     w={100}
                     h={100}

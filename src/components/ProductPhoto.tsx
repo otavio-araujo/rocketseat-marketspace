@@ -6,13 +6,14 @@ import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 import X from "phosphor-react-native/src/icons/X"
 
 import { ProductPhotoProps } from "@screens/app/ads/AdCreate"
+import { ProductImageDTO } from "@dtos/ProductImageDTO"
 
 type Props = {
-  photo: ProductPhotoProps
-  handleRemovePhoto?: () => void
+  photo: ProductImageDTO
+  handleRemoveProductImage?: () => void
 }
 
-export function ProductPhoto({ photo, handleRemovePhoto }: Props) {
+export function ProductPhoto({ photo, handleRemoveProductImage }: Props) {
   const { tokens } = gluestackUIConfig
   return (
     <Box
@@ -37,16 +38,16 @@ export function ProductPhoto({ photo, handleRemovePhoto }: Props) {
           right: 4,
           top: 4,
         }}
-        onPress={handleRemovePhoto}
+        onPress={handleRemoveProductImage}
       >
         <X size={12} color={tokens.colors.gray700} />
       </TouchableOpacity>
       <Image
-        source={{ uri: photo.uri }}
+        source={{ uri: photo.path }}
         w={100}
         h={100}
         rounded={"$md"}
-        alt={photo.title}
+        alt="Foto do produto"
         resizeMode="cover"
       />
     </Box>

@@ -56,7 +56,7 @@ export function AdDetails() {
       <Header headerVariant="simple" onPress={handleGoBack} />
 
       <ProductCarousel
-        data={productItem.product_images}
+        data={productItem.product_images || []}
         mt={"$3"}
         isActive={productItem.is_active}
       />
@@ -65,9 +65,9 @@ export function AdDetails() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack w={"$full"} px={"$6"} mt={"$5"} gap={"$6"}>
           <HStack alignItems="center">
-            <Avatar imageSource={productItem.user.avatar} />
+            <Avatar imageSource={productItem.user?.avatar} />
             <Text fontFamily={"$body"} fontSize={"$md"} ml={"$2"}>
-              {productItem.user.name}
+              {productItem.user?.name}
             </Text>
           </HStack>
 
@@ -126,20 +126,20 @@ export function AdDetails() {
             </Text>
 
             {productItem.payment_methods.map((method) => (
-              <HStack w={"$full"} gap={"$2"} key={method.key}>
-                {method.key === "boleto" && (
+              <HStack w={"$full"} gap={"$2"} key={method}>
+                {method === "boleto" && (
                   <Barcode size={18} color={tokens.colors.gray100} />
                 )}
-                {method.key === "pix" && (
+                {method === "pix" && (
                   <QrCode size={18} color={tokens.colors.gray100} />
                 )}
-                {method.key === "cash" && (
+                {method === "cash" && (
                   <Money size={18} color={tokens.colors.gray100} />
                 )}
-                {method.key === "card" && (
+                {method === "card" && (
                   <CreditCard size={18} color={tokens.colors.gray100} />
                 )}
-                {method.key === "deposit" && (
+                {method === "deposit" && (
                   <Bank size={18} color={tokens.colors.gray100} />
                 )}
                 <Text
@@ -148,7 +148,7 @@ export function AdDetails() {
                   fontSize={"$sm"}
                   color={"$gray200"}
                 >
-                  {method.name}
+                  {method}
                 </Text>
               </HStack>
             ))}
@@ -183,7 +183,7 @@ export function AdDetails() {
           icon={WhatsappLogo}
           mt={"$6"}
           onPress={() =>
-            Linking.openURL(`https://wa.me/${productItem.user.tel}`)
+            Linking.openURL(`https://wa.me/${productItem.user?.tel}`)
           }
         />
       </HStack>

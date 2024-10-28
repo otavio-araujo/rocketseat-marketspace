@@ -323,7 +323,7 @@ export function Home() {
       {/* Ads List */}
       <FlatList
         data={adsList}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id?.toString() || ""}
         renderItem={({ item }) => (
           <ProductCard
             onPress={() => handleGoToAdDetails(item.id)}

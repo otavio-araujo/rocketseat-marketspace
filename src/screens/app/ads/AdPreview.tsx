@@ -8,6 +8,7 @@ import {
   ScrollView,
   Center,
   SafeAreaView,
+  useToast,
 } from "@gluestack-ui/themed"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
@@ -25,40 +26,98 @@ import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Barcode from "phosphor-react-native/src/icons/Barcode"
 import ArrowLeft from "phosphor-react-native/src/icons/ArrowLeft"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
-import { Fragment } from "react"
-import { Platform } from "react-native"
 
-type AdDetails = {
-  id: number
-  uri: string
-  title: string
-}
+import { Platform } from "react-native"
+import { useAuth } from "@hooks/useAuth"
+import { AppError } from "@utils/AppError"
+import { Toast } from "@components/Toast"
+import { api } from "@services/api"
 
 export function AdPreview() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  const toast = useToast()
+
   const { tokens } = gluestackUIConfig
 
-  const images: AdDetails[] = [
-    {
-      id: 0,
-      uri: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "HeadPhones",
-    }, // https://unsplash.com/photos/Jup6QMQdLnM
-    {
-      id: 1,
-      uri: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?q=80&w=2022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "PlayStation5",
-    }, // https://unsplash.com/photos/oO62CP-g1EA
-    {
-      id: 2,
-      uri: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Cocooil",
-    }, // https://unsplash.com/photos/gKMmJEvcyA8
-  ]
+  const { productCreate, productCreateImages, user } = useAuth()
 
   function handleGoBack() {
     navigation.goBack()
   }
+
+  async function handleProductCreateImage(productID: string) {
+    try {
+      productCreateImages.map(async (image) => {
+        const fileExtension = image.path.split(".").pop()
+
+        const productImage = {
+          name: `${Date.now()}.${fileExtension}`,
+          uri: image.path,
+          type: `image/${fileExtension}`,
+        } as any
+
+        const formData = new FormData()
+        formData.append("product_id", productID)
+        formData.append("images", productImage)
+
+        const { data } = await api.post("/products/images", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Anúncio criado. Porém, as imagens não foram carregadas."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Upload das imagens do anúncio"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
+  async function handleCreateAd() {
+    try {
+      const { data, status } = await api.post("/products", productCreate)
+      if (status === 201) {
+        await handleProductCreateImage(data.id)
+      }
+      navigation.navigate("userAds")
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Não foi possível criar o anúncio."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Criar anúncio"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
   return (
     <VStack flex={1}>
       <StatusBar
@@ -82,19 +141,23 @@ export function AdPreview() {
         </Text>
       </Center>
 
-      <ProductCarousel data={images} />
+      <ProductCarousel data={productCreateImages} isPreviewing />
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack w={"$full"} px={"$6"} mt={"$5"} gap={"$6"}>
           <HStack alignItems="center">
-            <Avatar imageSource="https://i.pravatar.cc/300" />
+            <Avatar imageSource={user.avatar} />
             <Text fontFamily={"$body"} fontSize={"$sm"} ml={"$2"}>
-              Maria Gomes{" "}
+              {user.name}
             </Text>
           </HStack>
 
           <VStack alignItems="flex-start" gap={"$2"}>
             <HStack>
-              <Badge badgeVariant="muted" label="usado" mx={"auto"} />
+              <Badge
+                badgeVariant="muted"
+                label={productCreate.is_new ? "novo" : "usado"}
+                mx={"auto"}
+              />
             </HStack>
 
             <HStack
@@ -103,7 +166,7 @@ export function AdPreview() {
               alignItems="center"
             >
               <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
-                Luminária pendente
+                {productCreate.name}
               </Text>
               <HStack alignItems="baseline">
                 <Text
@@ -118,14 +181,13 @@ export function AdPreview() {
                   fontSize={"$lg"}
                   color={"$blueLight"}
                 >
-                  45,00
+                  {productCreate.price.toFixed(2)}
                 </Text>
               </HStack>
             </HStack>
 
             <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Cras congue cursus in tortor sagittis placerat nunc, tellus arcu.
-              Vitae ante leo eget maecenas urna mattis cursus.
+              {productCreate.description}
             </Text>
           </VStack>
 
@@ -134,7 +196,7 @@ export function AdPreview() {
               Aceita troca?
             </Text>
             <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-              Não
+              {productCreate.accept_trade ? "Sim" : "Nao"}
             </Text>
           </HStack>
 
@@ -143,61 +205,33 @@ export function AdPreview() {
               Meios de pagamento:{" "}
             </Text>
 
-            <HStack w={"$full"} gap={"$2"}>
-              <Barcode size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Boleto
-              </Text>
-            </HStack>
-            <HStack w={"$full"} gap={"$2"}>
-              <QrCode size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Pix
-              </Text>
-            </HStack>
-            <HStack w={"$full"} gap={"$2"}>
-              <Money size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Dinheiro
-              </Text>
-            </HStack>
-            <HStack w={"$full"} gap={"$2"}>
-              <CreditCard size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Caratão de Crédito
-              </Text>
-            </HStack>
-            <HStack w={"$full"} gap={"$2"}>
-              <Bank size={18} color={tokens.colors.gray100} />
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                Depósito Bancário
-              </Text>
-            </HStack>
+            {productCreate.payment_methods.map((method) => (
+              <HStack w={"$full"} gap={"$2"} key={method}>
+                {method === "boleto" && (
+                  <Barcode size={18} color={tokens.colors.gray100} />
+                )}
+                {method === "pix" && (
+                  <QrCode size={18} color={tokens.colors.gray100} />
+                )}
+                {method === "cash" && (
+                  <Money size={18} color={tokens.colors.gray100} />
+                )}
+                {method === "card" && (
+                  <CreditCard size={18} color={tokens.colors.gray100} />
+                )}
+                {method === "deposit" && (
+                  <Bank size={18} color={tokens.colors.gray100} />
+                )}
+                <Text
+                  textTransform="capitalize"
+                  fontFamily={"$body"}
+                  fontSize={"$sm"}
+                  color={"$gray200"}
+                >
+                  {method}
+                </Text>
+              </HStack>
+            ))}
           </VStack>
         </VStack>
       </ScrollView>
@@ -228,7 +262,7 @@ export function AdPreview() {
           mt={"$6"}
           flex={1}
           icon={Tag}
-          onPress={() => {}}
+          onPress={handleCreateAd}
         />
       </HStack>
     </VStack>
