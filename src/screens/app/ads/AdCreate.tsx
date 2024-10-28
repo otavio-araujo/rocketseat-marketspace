@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import * as FileSystem from "expo-file-system"
 import * as ImagePicker from "expo-image-picker"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { Platform, ScrollView, TouchableOpacity } from "react-native"
 
 import * as yup from "yup"
@@ -21,6 +21,7 @@ import {
   RadioLabel,
   CheckboxGroup,
   useToast,
+  set,
 } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
@@ -43,6 +44,12 @@ import { ProductPhoto } from "@components/ProductPhoto"
 import { Controller, useForm } from "react-hook-form"
 import { useAuth } from "@hooks/useAuth"
 import { ProductDTO } from "@dtos/ProductDTO"
+import { paymentMethods } from "@dtos/PaymentMethodDTO"
+
+type RouteParamsProps = {
+  isEditing?: boolean
+  productID?: string
+}
 
 type FormData = {
   name: string
@@ -60,15 +67,20 @@ const productSchema = yup.object({
 
 export function AdCreate() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+  const { isEditing, productID } = useRoute().params as RouteParamsProps
 
   const { tokens } = gluestackUIConfig
   const toast = useToast()
 
   const { contextProductCreate, contextProductCreateImages } = useAuth()
 
-  const [payments, setPayments] = useState([])
+  const [payments, setPayments] = useState<string[]>([])
   const [isNew, setIsNew] = useState<"novo" | "usado">("novo")
   const [acceptTrade, setAcceptTrade] = useState(false)
+
+  const [editingProduct, setEditingProduct] = useState<ProductDTO>(
+    {} as ProductDTO
+  )
 
   const [productImages, setProductImages] = useState<ProductImageDTO[]>(
     [] as ProductImageDTO[]
@@ -79,6 +91,11 @@ export function AdCreate() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
+    defaultValues: {
+      name: isEditing ? editingProduct?.name : "",
+      description: isEditing ? editingProduct?.description : "",
+      price: isEditing ? editingProduct?.price : 0,
+    },
     resolver: yupResolver(productSchema),
   })
 
@@ -119,19 +136,25 @@ export function AdCreate() {
 
     const is_new = isNew === "novo" ? true : false
 
-    const productCreate: ProductDTO = {
-      name: productData.name,
-      description: productData.description,
-      price: productData.price,
-      is_new: is_new,
-      accept_trade: acceptTrade,
-      payment_methods: payments,
+    if (payments.length > 0) {
+      const paymentsArray = paymentMethods.filter((payment_const) => {
+        return payments.includes(payment_const.key)
+      })
+
+      const productCreate: ProductDTO = {
+        name: productData.name,
+        description: productData.description,
+        price: productData.price,
+        is_new: is_new,
+        accept_trade: acceptTrade,
+        payment_methods: paymentsArray,
+      }
+
+      contextProductCreate(productCreate)
+      contextProductCreateImages(productImages)
+
+      navigation.navigate("adPreview")
     }
-
-    contextProductCreate(productCreate)
-    contextProductCreateImages(productImages)
-
-    navigation.navigate("adPreview")
   }
 
   async function handleProductImageSelect() {
@@ -187,11 +210,51 @@ export function AdCreate() {
     )
   }
 
+  async function fetchEditingProduct() {
+    try {
+      const { data } = await api.get(`/products/${productID}`)
+      if (data) {
+        setEditingProduct(data)
+      }
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Não foi possível carregar os dados do anúncio."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Anúncio"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (isEditing) {
+      fetchEditingProduct()
+    }
+  }, [isEditing])
+
+  useEffect(() => {
+    if (isEditing) {
+      setProductImages(editingProduct.product_images || [])
+    }
+  }, [editingProduct])
+
   return (
     <VStack flex={1} gap={"$4"} pt={Platform.OS === "android" ? "$12" : "$16"}>
       {/* Header */}
       <Header
-        title="Criar anúncio"
+        title={isEditing ? "Editar anúncio" : "Criar anúncio"}
         headerVariant="create"
         onPress={handleGoBack}
       />

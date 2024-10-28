@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native"
+import { StackActions, useNavigation } from "@react-navigation/native"
 
 import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 import {
@@ -90,12 +90,21 @@ export function AdPreview() {
   }
 
   async function handleCreateAd() {
+    const paymentsFiltered = productCreate.payment_methods.map((payment) => {
+      return payment.key
+    })
+
+    const productCreateData = {
+      ...productCreate,
+      payment_methods: paymentsFiltered,
+    }
+
     try {
-      const { data, status } = await api.post("/products", productCreate)
+      const { data, status } = await api.post("/products", productCreateData)
       if (status === 201) {
         await handleProductCreateImage(data.id)
       }
-      navigation.navigate("userAds")
+      navigation.navigate("home")
     } catch (error) {
       const isAppError = error instanceof AppError
 
@@ -205,21 +214,21 @@ export function AdPreview() {
               Meios de pagamento:{" "}
             </Text>
 
-            {productCreate.payment_methods.map((method) => (
-              <HStack w={"$full"} gap={"$2"} key={method}>
-                {method === "boleto" && (
+            {productCreate.payment_methods.map((payment) => (
+              <HStack w={"$full"} gap={"$2"} key={payment.key}>
+                {payment.key === "boleto" && (
                   <Barcode size={18} color={tokens.colors.gray100} />
                 )}
-                {method === "pix" && (
+                {payment.key === "pix" && (
                   <QrCode size={18} color={tokens.colors.gray100} />
                 )}
-                {method === "cash" && (
+                {payment.key === "cash" && (
                   <Money size={18} color={tokens.colors.gray100} />
                 )}
-                {method === "card" && (
+                {payment.key === "card" && (
                   <CreditCard size={18} color={tokens.colors.gray100} />
                 )}
-                {method === "deposit" && (
+                {payment.key === "deposit" && (
                   <Bank size={18} color={tokens.colors.gray100} />
                 )}
                 <Text
@@ -228,7 +237,7 @@ export function AdPreview() {
                   fontSize={"$sm"}
                   color={"$gray200"}
                 >
-                  {method}
+                  {payment.name}
                 </Text>
               </HStack>
             ))}

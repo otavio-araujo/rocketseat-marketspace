@@ -1,5 +1,9 @@
 import { useCallback, useState } from "react"
-import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native"
 
 import {
   FlatList,
@@ -89,12 +93,6 @@ export function UserAds() {
     useCallback(() => {
       fetchProducts()
     }, [adStatus])
-  )
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchProducts()
-    }, [])
   )
 
   return (

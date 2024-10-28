@@ -5,8 +5,8 @@ import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 
 import X from "phosphor-react-native/src/icons/X"
 
-import { ProductPhotoProps } from "@screens/app/ads/AdCreate"
 import { ProductImageDTO } from "@dtos/ProductImageDTO"
+import { api } from "@services/api"
 
 type Props = {
   photo: ProductImageDTO
@@ -15,6 +15,9 @@ type Props = {
 
 export function ProductPhoto({ photo, handleRemoveProductImage }: Props) {
   const { tokens } = gluestackUIConfig
+
+  console.log(`${api.defaults.baseURL}/images/${photo.path}`)
+
   return (
     <Box
       justifyContent="center"
@@ -43,7 +46,11 @@ export function ProductPhoto({ photo, handleRemoveProductImage }: Props) {
         <X size={12} color={tokens.colors.gray700} />
       </TouchableOpacity>
       <Image
-        source={{ uri: photo.path }}
+        source={{
+          uri: `${api.defaults.baseURL}/images/${photo.path}`
+            ? `${api.defaults.baseURL}/images/${photo.path}`
+            : photo.path,
+        }}
         w={100}
         h={100}
         rounded={"$md"}

@@ -14,7 +14,10 @@ export type AppRoutes = {
   homeTabs: undefined
   userAds: undefined
   logout: undefined
-  adCreate: undefined
+  adCreate: {
+    isEditing?: boolean | null
+    productID?: string | null
+  }
   adDetails: {
     productItem: ProductDTO
   }

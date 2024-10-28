@@ -7,7 +7,21 @@ import {
 } from "@react-navigation/native"
 
 import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
-import { VStack, Text, HStack, useToast } from "@gluestack-ui/themed"
+import {
+  VStack,
+  Text,
+  HStack,
+  useToast,
+  Modal,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  Heading,
+  ModalCloseButton,
+  ModalFooter,
+  Icon,
+  CloseIcon,
+} from "@gluestack-ui/themed"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -31,6 +45,7 @@ import { AppError } from "@utils/AppError"
 import { Toast } from "@components/Toast"
 import { api } from "@services/api"
 import { paymentMethods } from "@dtos/PaymentMethodDTO"
+import { ModalBody } from "@gluestack-ui/themed"
 
 export type AdDetails = {
   id: number
@@ -47,27 +62,13 @@ export function UserAdDetail() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
   const toast = useToast()
+  const [showModal, setShowModal] = useState(false)
 
   const { tokens } = gluestackUIConfig
 
   const { productItem, updatedProduct } = useRoute().params as RouteParamsProps
 
   const [product, setProduct] = useState<ProductDTO>(productItem as ProductDTO)
-
-  const images: ProductImageDTO[] = [
-    {
-      id: "0",
-      path: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    }, // https://unsplash.com/photos/Jup6QMQdLnM
-    {
-      id: "1",
-      path: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?q=80&w=2022&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    }, // https://unsplash.com/photos/oO62CP-g1EA
-    {
-      id: "2",
-      path: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    }, // https://unsplash.com/photos/gKMmJEvcyA8
-  ]
 
   function handleGoBack() {
     navigation.goBack()
@@ -143,7 +144,13 @@ export function UserAdDetail() {
           />
         ),
       })
+    } finally {
+      setShowModal(false)
     }
+  }
+
+  async function handleEditAd(productID: string) {
+    navigation.navigate("adCreate", { productID, isEditing: true })
   }
 
   useFocusEffect(
@@ -162,10 +169,9 @@ export function UserAdDetail() {
     <VStack pt={Platform.OS === "android" ? "$8" : "$12"}>
       <Header
         handleCreateAd={() => {}}
-        handleEditAd={() => {}}
+        handleEditAd={() => handleEditAd(product.id || "")}
         headerVariant="adDetails"
         onPress={handleGoBack}
-        title="Criar anúncio"
       />
       <ProductCarousel
         data={product.product_images || []}
@@ -284,10 +290,46 @@ export function UserAdDetail() {
             label="Excluir anúncio"
             buttonVariant="muted"
             icon={TrashSimple}
-            onPress={() => handleDeleteAd(product.id || "")}
+            onPress={() => setShowModal(true)}
           />
         </VStack>
       </VStack>
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false)
+        }}
+        size={"lg"}
+      >
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader>
+            <Heading fontFamily={"$heading"} color="$gray100" fontSize={"$xl"}>
+              Apagar anúncio
+            </Heading>
+            <ModalCloseButton>
+              <Icon as={CloseIcon} />
+            </ModalCloseButton>
+          </ModalHeader>
+          <ModalBody my={"$2"}>
+            <Text color={"$gray200"} fontFamily={"$body"} fontSize={"$md"}>
+              Deseja realmente apagar o anúncio "{product.name}"?
+            </Text>
+          </ModalBody>
+          <ModalFooter gap={"$2"}>
+            <Button
+              buttonVariant="muted"
+              label="Cancelar"
+              onPress={() => setShowModal(false)}
+            />
+            <Button
+              buttonVariant="dark"
+              label="Sim, apagar."
+              onPress={() => handleDeleteAd(product.id || "")}
+            />
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </VStack>
   )
 }

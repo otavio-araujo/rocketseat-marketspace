@@ -6,7 +6,6 @@ import { Badge } from "./Badge"
 import { Avatar } from "./Avatar"
 
 import { api } from "@services/api"
-import { getRandomIntInclusive } from "@utils/MathUtils"
 import { ProductDTO } from "@dtos/ProductDTO"
 
 type Props = TouchableOpacityProps & {
@@ -21,10 +20,15 @@ export function ProductCard({
   productData,
   ...rest
 }: Props) {
-  const getRandomProductImage = () => {
-    return productData.product_images[
-      getRandomIntInclusive(0, productData.product_images.length - 1)
-    ].path
+  function getImage() {
+    if (
+      Array.isArray(productData?.product_images) &&
+      productData.product_images.length > 0
+    ) {
+      return `${api.defaults.baseURL}/images/${productData.product_images[0]?.path}`
+    } else {
+      return "@assets/product/placeholder.png"
+    }
   }
 
   return (
@@ -35,7 +39,7 @@ export function ProductCard({
           w={"$full"}
           rounded={"$md"}
           source={{
-            uri: `${api.defaults.baseURL}/images/${getRandomProductImage()}`,
+            uri: getImage(),
           }}
           alt="Product image"
           resizeMode="cover"
@@ -49,7 +53,7 @@ export function ProductCard({
           px={"$1"}
         >
           {hasAvatar && (
-            <Avatar isCardAd imageSource={productData.user.avatar} />
+            <Avatar isCardAd imageSource={productData.user?.avatar || null} />
           )}
           <Badge
             label={productData.is_new ? "novo" : "usado"}
