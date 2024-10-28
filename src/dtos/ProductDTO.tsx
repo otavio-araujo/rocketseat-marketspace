@@ -13,7 +13,7 @@ export type ProductDTO = {
   created_at?: Date
   updated_at?: Date
   product_images?: ProductImageDTO[]
-  payment_methods: string[]
+  payment_methods: PaymentMethodsDTO[]
   user?: {
     avatar: string
     name: string

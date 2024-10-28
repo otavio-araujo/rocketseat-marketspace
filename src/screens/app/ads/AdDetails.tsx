@@ -125,21 +125,21 @@ export function AdDetails() {
               Meios de pagamento:{" "}
             </Text>
 
-            {productItem.payment_methods.map((method) => (
-              <HStack w={"$full"} gap={"$2"} key={method}>
-                {method === "boleto" && (
+            {productItem.payment_methods.map((payment) => (
+              <HStack w={"$full"} gap={"$2"} key={payment.key}>
+                {payment.key === "boleto" && (
                   <Barcode size={18} color={tokens.colors.gray100} />
                 )}
-                {method === "pix" && (
+                {payment.key === "pix" && (
                   <QrCode size={18} color={tokens.colors.gray100} />
                 )}
-                {method === "cash" && (
+                {payment.key === "cash" && (
                   <Money size={18} color={tokens.colors.gray100} />
                 )}
-                {method === "card" && (
+                {payment.key === "card" && (
                   <CreditCard size={18} color={tokens.colors.gray100} />
                 )}
-                {method === "deposit" && (
+                {payment.key === "deposit" && (
                   <Bank size={18} color={tokens.colors.gray100} />
                 )}
                 <Text
@@ -148,7 +148,7 @@ export function AdDetails() {
                   fontSize={"$sm"}
                   color={"$gray200"}
                 >
-                  {method}
+                  {payment.name}
                 </Text>
               </HStack>
             ))}

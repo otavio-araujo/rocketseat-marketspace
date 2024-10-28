@@ -91,6 +91,12 @@ export function UserAds() {
     }, [adStatus])
   )
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts()
+    }, [])
+  )
+
   return (
     /* Container */
     <VStack flex={1} gap={"$4"} pt={"$12"}>

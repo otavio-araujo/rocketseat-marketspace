@@ -78,6 +78,7 @@ export function Home() {
   async function handleGoToAdDetails(productId: string) {
     const { data } = await api.get(`/products/${productId}`)
     const productItem: ProductDTO = data
+
     navigation.navigate("adDetails", { productItem })
   }
 
@@ -326,7 +327,7 @@ export function Home() {
         keyExtractor={(item) => item.id?.toString() || ""}
         renderItem={({ item }) => (
           <ProductCard
-            onPress={() => handleGoToAdDetails(item.id)}
+            onPress={() => handleGoToAdDetails(item.id || "")}
             hasAvatar
             productData={item}
           />

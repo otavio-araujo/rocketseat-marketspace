@@ -30,6 +30,7 @@ import TrashSimple from "phosphor-react-native/src/icons/TrashSimple"
 import { AppError } from "@utils/AppError"
 import { Toast } from "@components/Toast"
 import { api } from "@services/api"
+import { paymentMethods } from "@dtos/PaymentMethodDTO"
 
 export type AdDetails = {
   id: number
@@ -118,6 +119,33 @@ export function UserAdDetail() {
     }
   }
 
+  async function handleDeleteAd(productId: string) {
+    try {
+      await api.delete(`/products/${productId}`)
+
+      navigation.navigate("userAds")
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const description = isAppError
+        ? error.message
+        : "Não foi possível deletar o anúncio."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast
+            id={id}
+            title="Meus anúncios"
+            toastVariant="error"
+            description={description}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
   useFocusEffect(
     useCallback(() => {
       if (productItem) {
@@ -140,16 +168,16 @@ export function UserAdDetail() {
         title="Criar anúncio"
       />
       <ProductCarousel
-        data={product.product_images}
+        data={product.product_images || []}
         mt={"$3"}
         isActive={product.is_active}
       />
 
       <VStack w={"$full"} px={"$6"} mt={"$5"} pb={"$7"} gap={"$6"}>
         <HStack alignItems="center">
-          <Avatar imageSource={product.user.avatar} />
+          <Avatar imageSource={product.user?.avatar || null} />
           <Text fontFamily={"$body"} fontSize={"$md"} ml={"$2"}>
-            {product.user.name}
+            {product.user?.name}
           </Text>
         </HStack>
 
@@ -207,21 +235,21 @@ export function UserAdDetail() {
             Meios de pagamento:{" "}
           </Text>
 
-          {product.payment_methods.map((method) => (
-            <HStack w={"$full"} gap={"$2"} key={method.key}>
-              {method.key === "boleto" && (
+          {product.payment_methods.map((payment) => (
+            <HStack w={"$full"} gap={"$2"} key={payment.key}>
+              {payment.key === "boleto" && (
                 <Barcode size={18} color={tokens.colors.gray100} />
               )}
-              {method.key === "pix" && (
+              {payment.key === "pix" && (
                 <QrCode size={18} color={tokens.colors.gray100} />
               )}
-              {method.key === "cash" && (
+              {payment.key === "cash" && (
                 <Money size={18} color={tokens.colors.gray100} />
               )}
-              {method.key === "card" && (
+              {payment.key === "card" && (
                 <CreditCard size={18} color={tokens.colors.gray100} />
               )}
-              {method.key === "deposit" && (
+              {payment.key === "deposit" && (
                 <Bank size={18} color={tokens.colors.gray100} />
               )}
               <Text
@@ -230,7 +258,7 @@ export function UserAdDetail() {
                 fontSize={"$sm"}
                 color={"$gray200"}
               >
-                {method.name}
+                {payment.name}
               </Text>
             </HStack>
           ))}
@@ -256,6 +284,7 @@ export function UserAdDetail() {
             label="Excluir anúncio"
             buttonVariant="muted"
             icon={TrashSimple}
+            onPress={() => handleDeleteAd(product.id || "")}
           />
         </VStack>
       </VStack>
