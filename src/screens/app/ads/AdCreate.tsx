@@ -89,6 +89,7 @@ export function AdCreate() {
   const {
     control,
     handleSubmit,
+    register,
     formState: { errors },
   } = useForm<FormData>({
     resolver: yupResolver(productSchema),
@@ -132,18 +133,13 @@ export function AdCreate() {
     const is_new = isNew === "novo" ? true : false
 
     if (payments.length > 0) {
-      const paymentsKeys = payments.map((payment) => payment.key)
-      const paymentsArray = paymentMethods.filter((payment_const) => {
-        return paymentsKeys.includes(payment_const.key)
-      })
-
       const productCreate: ProductDTO = {
         name: productData.name,
         description: productData.description,
         price: productData.price,
         is_new: is_new,
         accept_trade: acceptTrade,
-        payment_methods: paymentsArray,
+        payment_methods: payments,
       }
 
       contextProductCreate(productCreate)
@@ -249,8 +245,6 @@ export function AdCreate() {
     }
   }, [editingProduct])
 
-  console.log(payments)
-
   return (
     <VStack flex={1} gap={"$4"} pt={Platform.OS === "android" ? "$12" : "$16"}>
       {/* Header */}
@@ -321,7 +315,6 @@ export function AdCreate() {
                   type="text"
                   placeholder="Título do anúncio"
                   onChangeText={onChange}
-                  defaultValue={isEditing ? editingProduct.name : ""}
                   value={value}
                   errorMessages={errors.name?.message}
                 />
@@ -335,7 +328,6 @@ export function AdCreate() {
                 <Textarea
                   placeholder="Descrição do anúncio"
                   onChangeText={onChange}
-                  defaultValue={isEditing ? editingProduct.description : ""}
                   value={value}
                   errorMessages={errors.name?.message}
                 />
@@ -392,9 +384,7 @@ export function AdCreate() {
                 <Input
                   placeholder="Valor do produto"
                   onChangeText={onChange}
-                  defaultValue={
-                    isEditing ? editingProduct.price?.toString() : ""
-                  }
+                  value={Number(value).toFixed(2)}
                   inputVariant="money"
                   keyboardType="numeric"
                   errorMessages={errors.price?.message}
@@ -446,9 +436,9 @@ export function AdCreate() {
               </Text>
 
               <CheckboxGroup
-                value={payments.map((payment) => payment.key)}
-                onChange={(keys) => {
-                  setPayments(keys)
+                value={payments?.map((payment) => payment.key) || []}
+                onChange={(keys: string[]) => {
+                  setPayments(keys.map((key) => ({ key, name: key })))
                 }}
               >
                 <VStack gap={"$2"}>

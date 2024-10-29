@@ -32,6 +32,7 @@ import { useAuth } from "@hooks/useAuth"
 import { AppError } from "@utils/AppError"
 import { Toast } from "@components/Toast"
 import { api } from "@services/api"
+import { paymentMethods } from "@dtos/PaymentMethodDTO"
 
 export function AdPreview() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
@@ -190,7 +191,9 @@ export function AdPreview() {
                   fontSize={"$lg"}
                   color={"$blueLight"}
                 >
-                  {productCreate.price.toFixed(2)}
+                  {typeof productCreate.price === "number"
+                    ? productCreate.price.toFixed(2)
+                    : ""}
                 </Text>
               </HStack>
             </HStack>
@@ -237,7 +240,11 @@ export function AdPreview() {
                   fontSize={"$sm"}
                   color={"$gray200"}
                 >
-                  {payment.name}
+                  {
+                    paymentMethods.filter(
+                      (method) => method.key === payment.key
+                    )[0].name
+                  }
                 </Text>
               </HStack>
             ))}
