@@ -42,7 +42,9 @@ export function UserAds() {
   }
 
   function handleGoToAdCreate() {
-    navigation.navigate("adCreate")
+    navigation.navigate("adCreate", {
+      isEditing: false,
+    })
   }
 
   async function fetchProducts() {

@@ -6,7 +6,7 @@ export type ProductDTO = {
   name: string
   description: string
   is_new: boolean
-  price: number
+  price: number | string
   accept_trade: boolean
   user_id?: string
   is_active?: boolean

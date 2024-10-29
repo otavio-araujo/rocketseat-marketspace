@@ -44,7 +44,7 @@ import { ProductPhoto } from "@components/ProductPhoto"
 import { Controller, useForm } from "react-hook-form"
 import { useAuth } from "@hooks/useAuth"
 import { ProductDTO } from "@dtos/ProductDTO"
-import { paymentMethods } from "@dtos/PaymentMethodDTO"
+import { paymentMethods, PaymentMethodsDTO } from "@dtos/PaymentMethodDTO"
 
 type RouteParamsProps = {
   isEditing?: boolean
@@ -74,7 +74,7 @@ export function AdCreate() {
 
   const { contextProductCreate, contextProductCreateImages } = useAuth()
 
-  const [payments, setPayments] = useState<string[]>([])
+  const [payments, setPayments] = useState<PaymentMethodsDTO[]>([])
   const [isNew, setIsNew] = useState<"novo" | "usado">("novo")
   const [acceptTrade, setAcceptTrade] = useState(false)
 
@@ -91,11 +91,6 @@ export function AdCreate() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    defaultValues: {
-      name: isEditing ? editingProduct?.name : "",
-      description: isEditing ? editingProduct?.description : "",
-      price: isEditing ? editingProduct?.price : 0,
-    },
     resolver: yupResolver(productSchema),
   })
 
@@ -137,8 +132,9 @@ export function AdCreate() {
     const is_new = isNew === "novo" ? true : false
 
     if (payments.length > 0) {
+      const paymentsKeys = payments.map((payment) => payment.key)
       const paymentsArray = paymentMethods.filter((payment_const) => {
-        return payments.includes(payment_const.key)
+        return paymentsKeys.includes(payment_const.key)
       })
 
       const productCreate: ProductDTO = {
@@ -193,7 +189,7 @@ export function AdCreate() {
         }
 
         const newProductImage: ProductImageDTO = {
-          id: `${Date.now()}`,
+          id: `local:${Date.now()}`,
           path: photoSelected.uri,
         } as ProductImageDTO
 
@@ -247,8 +243,13 @@ export function AdCreate() {
   useEffect(() => {
     if (isEditing) {
       setProductImages(editingProduct.product_images || [])
+      setIsNew(editingProduct.is_new ? "novo" : "usado")
+      setAcceptTrade(editingProduct.accept_trade === true ? true : false)
+      setPayments(editingProduct.payment_methods)
     }
   }, [editingProduct])
+
+  console.log(payments)
 
   return (
     <VStack flex={1} gap={"$4"} pt={Platform.OS === "android" ? "$12" : "$16"}>
@@ -320,6 +321,7 @@ export function AdCreate() {
                   type="text"
                   placeholder="Título do anúncio"
                   onChangeText={onChange}
+                  defaultValue={isEditing ? editingProduct.name : ""}
                   value={value}
                   errorMessages={errors.name?.message}
                 />
@@ -333,6 +335,7 @@ export function AdCreate() {
                 <Textarea
                   placeholder="Descrição do anúncio"
                   onChangeText={onChange}
+                  defaultValue={isEditing ? editingProduct.description : ""}
                   value={value}
                   errorMessages={errors.name?.message}
                 />
@@ -389,6 +392,9 @@ export function AdCreate() {
                 <Input
                   placeholder="Valor do produto"
                   onChangeText={onChange}
+                  defaultValue={
+                    isEditing ? editingProduct.price?.toString() : ""
+                  }
                   inputVariant="money"
                   keyboardType="numeric"
                   errorMessages={errors.price?.message}
@@ -413,6 +419,7 @@ export function AdCreate() {
                 <Switch
                   p={"$0"}
                   m={"$0"}
+                  value={acceptTrade}
                   onChange={() => setAcceptTrade(!acceptTrade)}
                   sx={{
                     _light: {
@@ -439,7 +446,7 @@ export function AdCreate() {
               </Text>
 
               <CheckboxGroup
-                value={payments}
+                value={payments.map((payment) => payment.key)}
                 onChange={(keys) => {
                   setPayments(keys)
                 }}

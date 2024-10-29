@@ -16,8 +16,6 @@ type Props = {
 export function ProductPhoto({ photo, handleRemoveProductImage }: Props) {
   const { tokens } = gluestackUIConfig
 
-  console.log(`${api.defaults.baseURL}/images/${photo.path}`)
-
   return (
     <Box
       justifyContent="center"
@@ -47,9 +45,9 @@ export function ProductPhoto({ photo, handleRemoveProductImage }: Props) {
       </TouchableOpacity>
       <Image
         source={{
-          uri: `${api.defaults.baseURL}/images/${photo.path}`
-            ? `${api.defaults.baseURL}/images/${photo.path}`
-            : photo.path,
+          uri: photo.path.includes("file:", 0)
+            ? photo.path
+            : `${api.defaults.baseURL}/images/${photo.path}`,
         }}
         w={100}
         h={100}

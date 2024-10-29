@@ -83,7 +83,7 @@ export function Home() {
   }
 
   function handleGoToAdCreate() {
-    navigation.navigate("adCreate", { isEditing: true })
+    navigation.navigate("adCreate", { isEditing: false })
   }
 
   function handleGoToUserAds() {
