@@ -124,7 +124,7 @@ export function UserAdDetail() {
     try {
       await api.delete(`/products/${productId}`)
 
-      navigation.navigate("userAds")
+      navigation.goBack()
     } catch (error) {
       const isAppError = error instanceof AppError
 
@@ -217,7 +217,7 @@ export function UserAdDetail() {
                 fontSize={"$lg"}
                 color={"$blueLight"}
               >
-                {(product.price / 100).toFixed(2)}
+                {(Number(product.price) / 100).toFixed(2)}
               </Text>
             </HStack>
           </HStack>

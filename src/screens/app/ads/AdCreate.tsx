@@ -54,7 +54,7 @@ type RouteParamsProps = {
 type FormData = {
   name: string
   description: string
-  price: number
+  price: string
 }
 
 const productSchema = yup.object({
@@ -62,7 +62,7 @@ const productSchema = yup.object({
 
   description: yup.string().required("A descrição do produto é obrigatória."),
 
-  price: yup.number().required("O valor do produto é obrigatório."),
+  price: yup.string().required("O valor do produto é obrigatório."),
 })
 
 export function AdCreate() {
@@ -78,6 +78,10 @@ export function AdCreate() {
   const [isNew, setIsNew] = useState<"novo" | "usado">("novo")
   const [acceptTrade, setAcceptTrade] = useState(false)
 
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
+  const [price, setPrice] = useState("")
+
   const [editingProduct, setEditingProduct] = useState<ProductDTO>(
     {} as ProductDTO
   )
@@ -89,6 +93,7 @@ export function AdCreate() {
   const {
     control,
     handleSubmit,
+    setValue,
     register,
     formState: { errors },
   } = useForm<FormData>({
@@ -136,7 +141,7 @@ export function AdCreate() {
       const productCreate: ProductDTO = {
         name: productData.name,
         description: productData.description,
-        price: productData.price,
+        price: Number(productData.price),
         is_new: is_new,
         accept_trade: acceptTrade,
         payment_methods: payments,
@@ -242,6 +247,10 @@ export function AdCreate() {
       setIsNew(editingProduct.is_new ? "novo" : "usado")
       setAcceptTrade(editingProduct.accept_trade === true ? true : false)
       setPayments(editingProduct.payment_methods)
+
+      setValue("name", editingProduct.name)
+      setValue("description", editingProduct.description)
+      setValue("price", Number(editingProduct.price).toFixed(2))
     }
   }, [editingProduct])
 
@@ -384,7 +393,7 @@ export function AdCreate() {
                 <Input
                   placeholder="Valor do produto"
                   onChangeText={onChange}
-                  value={Number(value).toFixed(2)}
+                  value={value}
                   inputVariant="money"
                   keyboardType="numeric"
                   errorMessages={errors.price?.message}

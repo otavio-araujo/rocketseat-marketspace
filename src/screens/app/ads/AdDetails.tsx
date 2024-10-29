@@ -101,7 +101,7 @@ export function AdDetails() {
                   fontSize={"$lg"}
                   color={"$blueLight"}
                 >
-                  {(productItem.price / 100).toFixed(2)}
+                  {(Number(productItem.price) / 100).toFixed(2)}
                 </Text>
               </HStack>
             </HStack>
@@ -174,7 +174,7 @@ export function AdDetails() {
             R${" "}
           </Text>
           <Text fontFamily="$heading" fontSize={"$xl"} color={"$blue"}>
-            {(productItem.price / 100).toFixed(2)}
+            {(Number(productItem.price) / 100).toFixed(2)}
           </Text>
         </HStack>
         <Button
