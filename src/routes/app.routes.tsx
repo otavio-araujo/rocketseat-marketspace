@@ -21,7 +21,9 @@ export type AppRoutes = {
   adDetails: {
     productItem: ProductDTO
   }
-  adPreview: undefined
+  adPreview: {
+    isEditing?: boolean | null
+  }
   userAdDetail: {
     productItem?: ProductDTO
     updatedProduct?: ProductDTO

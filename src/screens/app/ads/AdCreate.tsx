@@ -45,6 +45,7 @@ import { Controller, useForm } from "react-hook-form"
 import { useAuth } from "@hooks/useAuth"
 import { ProductDTO } from "@dtos/ProductDTO"
 import { paymentMethods, PaymentMethodsDTO } from "@dtos/PaymentMethodDTO"
+import { formatCurrency, parseCurrency } from "@utils/CurrencyMask"
 
 type RouteParamsProps = {
   isEditing?: boolean
@@ -139,9 +140,10 @@ export function AdCreate() {
 
     if (payments.length > 0) {
       const productCreate: ProductDTO = {
+        id: productID ? productID : "",
         name: productData.name,
         description: productData.description,
-        price: Number(productData.price),
+        price: Number(parseCurrency(productData.price)),
         is_new: is_new,
         accept_trade: acceptTrade,
         payment_methods: payments,
@@ -150,7 +152,7 @@ export function AdCreate() {
       contextProductCreate(productCreate)
       contextProductCreateImages(productImages)
 
-      navigation.navigate("adPreview")
+      navigation.navigate("adPreview", { isEditing })
     }
   }
 
@@ -235,6 +237,12 @@ export function AdCreate() {
     }
   }
 
+  function handlePriceMask(price: string) {
+    const formattedPrice = formatCurrency(price)
+
+    setValue("price", formattedPrice)
+  }
+
   useEffect(() => {
     if (isEditing) {
       fetchEditingProduct()
@@ -250,7 +258,7 @@ export function AdCreate() {
 
       setValue("name", editingProduct.name)
       setValue("description", editingProduct.description)
-      setValue("price", Number(editingProduct.price).toFixed(2))
+      setValue("price", formatCurrency(String(editingProduct.price)))
     }
   }, [editingProduct])
 
@@ -392,7 +400,7 @@ export function AdCreate() {
               render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder="Valor do produto"
-                  onChangeText={onChange}
+                  onChangeText={(value) => handlePriceMask(value)}
                   value={value}
                   inputVariant="money"
                   keyboardType="numeric"

@@ -1,4 +1,4 @@
-import { StackActions, useNavigation } from "@react-navigation/native"
+import { StackActions, useNavigation, useRoute } from "@react-navigation/native"
 
 import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 import {
@@ -33,9 +33,18 @@ import { AppError } from "@utils/AppError"
 import { Toast } from "@components/Toast"
 import { api } from "@services/api"
 import { paymentMethods } from "@dtos/PaymentMethodDTO"
+import { formatCurrency } from "@utils/CurrencyMask"
+import { ProductDTO } from "@dtos/ProductDTO"
+import { ProductImageDTO } from "@dtos/ProductImageDTO"
+
+type RouteParamsProps = {
+  isEditing?: boolean
+}
 
 export function AdPreview() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  const { isEditing } = useRoute().params as RouteParamsProps
 
   const toast = useToast()
 
@@ -47,50 +56,83 @@ export function AdPreview() {
     navigation.goBack()
   }
 
-  async function handleProductCreateImage(productID: string) {
+  async function handleProductCreateImage(
+    productID: string,
+    productImagesToUpload: ProductImageDTO[] = []
+  ) {
     try {
-      productCreateImages.map(async (image) => {
-        const fileExtension = image.path.split(".").pop()
+      if (isEditing) {
+        productImagesToUpload.map(async (image) => {
+          const fileExtension = image.path.split(".").pop()
 
-        const productImage = {
-          name: `${Date.now()}.${fileExtension}`,
-          uri: image.path,
-          type: `image/${fileExtension}`,
-        } as any
+          const productImage = {
+            name: `${Date.now()}.${fileExtension}`,
+            uri: image.path,
+            type: `image/${fileExtension}`,
+          } as any
 
-        const formData = new FormData()
-        formData.append("product_id", productID)
-        formData.append("images", productImage)
+          const formData = new FormData()
+          formData.append("product_id", productID)
+          formData.append("images", productImage)
 
-        const { data } = await api.post("/products/images", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          const { data } = await api.post("/products/images", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
         })
-      })
+      } else {
+        productCreateImages.map(async (image) => {
+          const fileExtension = image.path.split(".").pop()
+
+          const productImage = {
+            name: `${Date.now()}.${fileExtension}`,
+            uri: image.path,
+            type: `image/${fileExtension}`,
+          } as any
+
+          const formData = new FormData()
+          formData.append("product_id", productID)
+          formData.append("images", productImage)
+
+          const { data } = await api.post("/products/images", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+        })
+      }
     } catch (error) {
-      const isAppError = error instanceof AppError
-
-      const description = isAppError
-        ? error.message
-        : "Anúncio criado. Porém, as imagens não foram carregadas."
-
-      toast.show({
-        placement: "top",
-        render: ({ id }) => (
-          <Toast
-            id={id}
-            title="Upload das imagens do anúncio"
-            toastVariant="error"
-            description={description}
-            onClose={() => toast.close(id)}
-          />
-        ),
-      })
+      throw error
     }
   }
 
-  async function handleCreateAd() {
+  async function handleProductDeleteImage(imagesToDelete: string[]) {
+    try {
+      const response = await api.delete("/products/images/", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          images: imagesToDelete,
+        },
+      })
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+
+      throw error
+    }
+  }
+
+  const imageExistsById = (
+    item: ProductImageDTO,
+    array: ProductImageDTO[]
+  ): boolean => {
+    return array.some((arrayItem) => arrayItem.id === item.id)
+  }
+
+  async function handleCreateOrUpdateAd() {
     const paymentsFiltered = productCreate.payment_methods.map((payment) => {
       return payment.key
     })
@@ -101,10 +143,46 @@ export function AdPreview() {
     }
 
     try {
-      const { data, status } = await api.post("/products", productCreateData)
-      if (status === 201) {
-        await handleProductCreateImage(data.id)
+      if (isEditing) {
+        const responseProduct = await api.get(`/products/${productCreate.id}`)
+
+        let productImagesToDelete: string[] = []
+        let productImagesToUpload: ProductImageDTO[] = []
+
+        responseProduct.data.product_images.map((image: ProductImageDTO) => {
+          !imageExistsById(image, productCreateImages)
+            ? productImagesToDelete.push(image.id)
+            : null
+        })
+
+        productCreateImages.map((image) => {
+          if (image.path.includes("file:", 0)) {
+            productImagesToUpload.push(image)
+          }
+        })
+
+        const { data, status } = await api.put(
+          `/products/${productCreate.id}`,
+          productCreateData
+        )
+        if (status === 204) {
+          if (productImagesToUpload.length > 0) {
+            await handleProductCreateImage(
+              String(productCreate.id),
+              productImagesToUpload
+            )
+          }
+          if (productImagesToDelete.length > 0) {
+            await handleProductDeleteImage(productImagesToDelete)
+          }
+        }
+      } else {
+        const { data, status } = await api.post("/products", productCreateData)
+        if (status === 201) {
+          await handleProductCreateImage(data.id)
+        }
       }
+
       navigation.navigate("home")
     } catch (error) {
       const isAppError = error instanceof AppError
@@ -151,7 +229,7 @@ export function AdPreview() {
         </Text>
       </Center>
 
-      <ProductCarousel data={productCreateImages} isPreviewing />
+      <ProductCarousel data={productCreateImages} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack w={"$full"} px={"$6"} mt={"$5"} gap={"$6"}>
           <HStack alignItems="center">
@@ -192,7 +270,7 @@ export function AdPreview() {
                   color={"$blueLight"}
                 >
                   {typeof productCreate.price === "number"
-                    ? productCreate.price.toFixed(2)
+                    ? formatCurrency(String(productCreate.price))
                     : ""}
                 </Text>
               </HStack>
@@ -278,7 +356,7 @@ export function AdPreview() {
           mt={"$6"}
           flex={1}
           icon={Tag}
-          onPress={handleCreateAd}
+          onPress={handleCreateOrUpdateAd}
         />
       </HStack>
     </VStack>

@@ -7,6 +7,7 @@ import { Avatar } from "./Avatar"
 
 import { api } from "@services/api"
 import { ProductDTO } from "@dtos/ProductDTO"
+import { formatCurrency } from "@utils/CurrencyMask"
 
 type Props = TouchableOpacityProps & {
   hasAvatar?: boolean
@@ -78,7 +79,7 @@ export function ProductCard({
             ml={"$1"}
             color={"$gray100"}
           >
-            {(productData.price / 100).toFixed(2)}
+            {formatCurrency(String(productData.price))}
           </Text>
         </HStack>
       </TouchableOpacity>

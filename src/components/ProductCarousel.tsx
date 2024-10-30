@@ -60,7 +60,7 @@ export function ProductCarousel({
             <Image
               position="relative"
               source={{
-                uri: isPreviewing
+                uri: item.path.includes("file:", 0)
                   ? item.path
                   : `${api.defaults.baseURL}/images/${item.path}`,
               }}

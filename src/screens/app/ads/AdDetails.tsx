@@ -34,6 +34,7 @@ import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Barcode from "phosphor-react-native/src/icons/Barcode"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
 import WhatsappLogo from "phosphor-react-native/src/icons/WhatsappLogo"
+import { formatCurrency } from "@utils/CurrencyMask"
 
 type RouteParamsProps = {
   productItem: ProductDTO
@@ -101,7 +102,7 @@ export function AdDetails() {
                   fontSize={"$lg"}
                   color={"$blueLight"}
                 >
-                  {(Number(productItem.price) / 100).toFixed(2)}
+                  {formatCurrency(String(productItem.price))}
                 </Text>
               </HStack>
             </HStack>
@@ -174,7 +175,7 @@ export function AdDetails() {
             R${" "}
           </Text>
           <Text fontFamily="$heading" fontSize={"$xl"} color={"$blue"}>
-            {(Number(productItem.price) / 100).toFixed(2)}
+            {formatCurrency(String(productItem.price))}
           </Text>
         </HStack>
         <Button

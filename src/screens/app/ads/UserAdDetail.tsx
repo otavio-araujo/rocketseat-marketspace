@@ -46,6 +46,7 @@ import { Toast } from "@components/Toast"
 import { api } from "@services/api"
 import { paymentMethods } from "@dtos/PaymentMethodDTO"
 import { ModalBody } from "@gluestack-ui/themed"
+import { formatCurrency } from "@utils/CurrencyMask"
 
 export type AdDetails = {
   id: number
@@ -76,7 +77,6 @@ export function UserAdDetail() {
 
   async function handleIsActive() {
     try {
-      console.log(product)
       const response = await api.patch(`/products/${product.id}`, {
         is_active: !product.is_active,
       })
@@ -217,7 +217,7 @@ export function UserAdDetail() {
                 fontSize={"$lg"}
                 color={"$blueLight"}
               >
-                {(Number(product.price) / 100).toFixed(2)}
+                {formatCurrency(String(product.price))}
               </Text>
             </HStack>
           </HStack>
