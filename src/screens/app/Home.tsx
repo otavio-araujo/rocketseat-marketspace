@@ -25,6 +25,7 @@ import {
   Image,
   useToast,
   set,
+  Center,
 } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
@@ -33,6 +34,7 @@ import Plus from "phosphor-react-native/src/icons/Plus"
 import Sliders from "phosphor-react-native/src/icons/Sliders"
 import ArrowRight from "phosphor-react-native/src/icons/ArrowRight"
 import MagnifyingGlass from "phosphor-react-native/src/icons/MagnifyingGlass"
+import Package from "phosphor-react-native/src/icons/Package"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -49,10 +51,15 @@ import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { Checkbox } from "@components/Checkbox"
 import { ProductCard } from "@components/ProductCard"
+import { isLoading } from "expo-font"
+import { Loading } from "@components/Loading"
+import { EmptyProducts } from "@components/EmptyProducts"
 
 export function Home() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const { user } = useAuth()
+
+  const [isLoading, setIsLoading] = useState(true)
 
   const { tokens } = gluestackUIConfig
 
@@ -91,6 +98,7 @@ export function Home() {
   }
 
   async function fetchProducts() {
+    setIsLoading(true)
     try {
       const { data } = await api.get("/products/")
 
@@ -114,6 +122,8 @@ export function Home() {
           />
         ),
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -202,7 +212,9 @@ export function Home() {
     }, [])
   )
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     /* Container */
     <VStack flex={1} px={"$8"} pt={Platform.OS === "android" ? "$12" : "$16"}>
       {/* Header */}
@@ -344,6 +356,7 @@ export function Home() {
           gap: 20,
         }}
         numColumns={2}
+        ListEmptyComponent={() => <EmptyProducts />}
       />
       {/* End - Ads List */}
 

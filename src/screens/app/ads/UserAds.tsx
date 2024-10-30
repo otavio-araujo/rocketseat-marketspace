@@ -26,6 +26,8 @@ import { Toast } from "@components/Toast"
 import { Header } from "@components/Header"
 import { Selectbox } from "@components/Selectbox"
 import { ProductCard } from "@components/ProductCard"
+import { EmptyProducts } from "@components/EmptyProducts"
+import { Loading } from "@components/Loading"
 
 export function UserAds() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
@@ -34,6 +36,7 @@ export function UserAds() {
   const [adStatus, setAdStatus] = useState("todos")
   const [adsList, setAdsList] = useState<ProductDTO[]>([] as ProductDTO[])
   const [userTotalActiveAds, setUserTotalActiveAds] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
   async function handleUserAdDetail(productId: string) {
     const { data } = await api.get(`/products/${productId}`)
@@ -48,6 +51,7 @@ export function UserAds() {
   }
 
   async function fetchProducts() {
+    setIsLoading(true)
     try {
       const { data } = await api.get("/users/products")
 
@@ -84,6 +88,8 @@ export function UserAds() {
           />
         ),
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -97,7 +103,9 @@ export function UserAds() {
     }, [adStatus])
   )
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     /* Container */
     <VStack flex={1} gap={"$4"} pt={"$12"}>
       <Header
@@ -144,6 +152,7 @@ export function UserAds() {
           gap: 20,
         }}
         numColumns={2}
+        ListEmptyComponent={() => <EmptyProducts />}
         showsVerticalScrollIndicator={false}
       />
       {/* End - Ads List */}
