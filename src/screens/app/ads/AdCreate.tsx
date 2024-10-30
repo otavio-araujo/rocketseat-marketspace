@@ -46,6 +46,7 @@ import { useAuth } from "@hooks/useAuth"
 import { ProductDTO } from "@dtos/ProductDTO"
 import { paymentMethods, PaymentMethodsDTO } from "@dtos/PaymentMethodDTO"
 import { formatCurrency, parseCurrency } from "@utils/CurrencyMask"
+import { Loading } from "@components/Loading"
 
 type RouteParamsProps = {
   isEditing?: boolean
@@ -69,6 +70,7 @@ const productSchema = yup.object({
 export function AdCreate() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const { isEditing, productID } = useRoute().params as RouteParamsProps
+  const [isLoading, setIsLoading] = useState(false)
 
   const { tokens } = gluestackUIConfig
   const toast = useToast()
@@ -210,6 +212,7 @@ export function AdCreate() {
   }
 
   async function fetchEditingProduct() {
+    setIsLoading(true)
     try {
       const { data } = await api.get(`/products/${productID}`)
       if (data) {
@@ -234,6 +237,8 @@ export function AdCreate() {
           />
         ),
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -262,7 +267,9 @@ export function AdCreate() {
     }
   }, [editingProduct])
 
-  return (
+  return isLoading && isEditing ? (
+    <Loading />
+  ) : (
     <VStack flex={1} gap={"$4"} pt={Platform.OS === "android" ? "$12" : "$16"}>
       {/* Header */}
       <Header
