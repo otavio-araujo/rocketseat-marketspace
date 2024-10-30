@@ -1,14 +1,11 @@
 import { Platform } from "react-native"
-import {
-  createBottomTabNavigator,
-  BottomTabNavigationProp,
-} from "@react-navigation/bottom-tabs"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 
 import { Home } from "@screens/app/Home"
-import { UserAds } from "@screens/app/ads/UserAds"
 import { LogOUt } from "@screens/app/LogOut"
+import { UserAds } from "@screens/app/ads/UserAds"
 
 import Tag from "phosphor-react-native/src/icons/Tag"
 import House from "phosphor-react-native/src/icons/House"

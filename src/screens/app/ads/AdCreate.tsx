@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import * as FileSystem from "expo-file-system"
 import * as ImagePicker from "expo-image-picker"
+import { Controller, useForm } from "react-hook-form"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { Platform, ScrollView, TouchableOpacity } from "react-native"
 
@@ -21,16 +22,18 @@ import {
   RadioLabel,
   CheckboxGroup,
   useToast,
-  set,
 } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
 import { AppError } from "@utils/AppError"
 
 import { api } from "@services/api"
+import { ProductDTO } from "@dtos/ProductDTO"
 import { ProductImageDTO } from "@dtos/ProductImageDTO"
+import { paymentMethods, PaymentMethodsDTO } from "@dtos/PaymentMethodDTO"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
+import { useAuth } from "@hooks/useAuth"
 
 import Plus from "phosphor-react-native/src/regular/Plus"
 
@@ -38,15 +41,12 @@ import { Input } from "@components/Input"
 import { Toast } from "@components/Toast"
 import { Button } from "@components/Button"
 import { Header } from "@components/Header"
+import { Loading } from "@components/Loading"
 import { Textarea } from "@components/Textarea"
 import { Checkbox } from "@components/Checkbox"
 import { ProductPhoto } from "@components/ProductPhoto"
-import { Controller, useForm } from "react-hook-form"
-import { useAuth } from "@hooks/useAuth"
-import { ProductDTO } from "@dtos/ProductDTO"
-import { paymentMethods, PaymentMethodsDTO } from "@dtos/PaymentMethodDTO"
+
 import { formatCurrency, parseCurrency } from "@utils/CurrencyMask"
-import { Loading } from "@components/Loading"
 
 type RouteParamsProps = {
   isEditing?: boolean
@@ -80,10 +80,6 @@ export function AdCreate() {
   const [payments, setPayments] = useState<PaymentMethodsDTO[]>([])
   const [isNew, setIsNew] = useState<"novo" | "usado">("novo")
   const [acceptTrade, setAcceptTrade] = useState(false)
-
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-  const [price, setPrice] = useState("")
 
   const [editingProduct, setEditingProduct] = useState<ProductDTO>(
     {} as ProductDTO

@@ -1,9 +1,9 @@
 import { ComponentProps, ReactNode } from "react"
 import {
-  Button as GluestackButton,
   ButtonText,
   ButtonIcon,
   ButtonSpinner,
+  Button as GluestackButton,
 } from "@gluestack-ui/themed"
 import { Loading } from "./Loading"
 

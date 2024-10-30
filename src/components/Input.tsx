@@ -1,15 +1,15 @@
 import { ComponentProps, useState } from "react"
 
 import {
-  Input as GluestackInput,
+  EyeIcon,
+  InputIcon,
+  InputSlot,
   InputField,
+  EyeOffIcon,
   FormControl,
   FormControlError,
   FormControlErrorText,
-  InputSlot,
-  InputIcon,
-  EyeIcon,
-  EyeOffIcon,
+  Input as GluestackInput,
 } from "@gluestack-ui/themed"
 import { Text } from "@gluestack-ui/themed"
 

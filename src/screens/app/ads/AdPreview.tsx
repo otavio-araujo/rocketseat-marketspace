@@ -1,19 +1,21 @@
-import { StackActions, useNavigation, useRoute } from "@react-navigation/native"
+import { useState } from "react"
+import { Platform } from "react-native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 
-import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 import {
   VStack,
   Text,
   HStack,
   ScrollView,
   Center,
-  SafeAreaView,
   useToast,
 } from "@gluestack-ui/themed"
+import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
 import { Badge } from "@components/Badge"
+import { Toast } from "@components/Toast"
 import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { StatusBar } from "@components/StatusBar"
@@ -27,16 +29,14 @@ import Barcode from "phosphor-react-native/src/icons/Barcode"
 import ArrowLeft from "phosphor-react-native/src/icons/ArrowLeft"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
 
-import { Platform } from "react-native"
+import { api } from "@services/api"
 import { useAuth } from "@hooks/useAuth"
 import { AppError } from "@utils/AppError"
-import { Toast } from "@components/Toast"
-import { api } from "@services/api"
+
 import { paymentMethods } from "@dtos/PaymentMethodDTO"
-import { formatCurrency } from "@utils/CurrencyMask"
-import { ProductDTO } from "@dtos/ProductDTO"
 import { ProductImageDTO } from "@dtos/ProductImageDTO"
-import { useState } from "react"
+
+import { formatCurrency } from "@utils/CurrencyMask"
 
 type RouteParamsProps = {
   isEditing?: boolean

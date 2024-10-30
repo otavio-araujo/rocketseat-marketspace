@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-import { FlatList, Keyboard, Platform, TouchableOpacity } from "react-native"
+import { useCallback, useRef, useState } from "react"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { FlatList, Keyboard, Platform, TouchableOpacity } from "react-native"
+
 import {
   Icon,
   Text,
@@ -22,10 +23,7 @@ import {
   Divider,
   CloseIcon,
   CheckboxGroup,
-  Image,
   useToast,
-  set,
-  Center,
 } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
@@ -34,7 +32,6 @@ import Plus from "phosphor-react-native/src/icons/Plus"
 import Sliders from "phosphor-react-native/src/icons/Sliders"
 import ArrowRight from "phosphor-react-native/src/icons/ArrowRight"
 import MagnifyingGlass from "phosphor-react-native/src/icons/MagnifyingGlass"
-import Package from "phosphor-react-native/src/icons/Package"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -49,10 +46,9 @@ import { Badge } from "@components/Badge"
 import { Toast } from "@components/Toast"
 import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
+import { Loading } from "@components/Loading"
 import { Checkbox } from "@components/Checkbox"
 import { ProductCard } from "@components/ProductCard"
-import { isLoading } from "expo-font"
-import { Loading } from "@components/Loading"
 import { EmptyProducts } from "@components/EmptyProducts"
 
 export function Home() {

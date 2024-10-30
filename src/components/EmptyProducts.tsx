@@ -1,7 +1,6 @@
-import { gluestackUIConfig } from "@config/gluestack-ui.config"
-import { Text } from "@gluestack-ui/themed"
-import { Center } from "@gluestack-ui/themed"
+import { Text, Center } from "@gluestack-ui/themed"
 import Package from "phosphor-react-native/src/icons/Package"
+import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
 export function EmptyProducts() {
   const { tokens } = gluestackUIConfig

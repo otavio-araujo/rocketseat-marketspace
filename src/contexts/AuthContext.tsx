@@ -2,19 +2,20 @@ import { createContext, ReactNode, useEffect, useState } from "react"
 
 import { api } from "@services/api"
 import { UserDTO } from "@dtos/UserDTO"
+import { ProductDTO } from "@dtos/ProductDTO"
+import { ProductImageDTO } from "@dtos/ProductImageDTO"
 
 import {
   storageUserSave,
   storageUserGet,
   storageUserRemove,
 } from "@storage/storageUser"
+
 import {
   storageAuthTokenSave,
   storageAuthTokenGet,
   storageAuthTokenRemove,
 } from "@storage/storageAuthToken"
-import { ProductDTO } from "@dtos/ProductDTO"
-import { ProductImageDTO } from "@dtos/ProductImageDTO"
 
 export type AuthContextDataProps = {
   user: UserDTO

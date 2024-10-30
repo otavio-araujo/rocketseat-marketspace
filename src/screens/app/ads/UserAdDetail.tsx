@@ -1,15 +1,15 @@
 import { Platform } from "react-native"
-import { useCallback, useEffect, useState } from "react"
 import {
   useFocusEffect,
   useNavigation,
   useRoute,
 } from "@react-navigation/native"
+import { useCallback, useState } from "react"
 
-import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 import {
   VStack,
   ScrollView,
+  ModalBody,
   Text,
   HStack,
   useToast,
@@ -23,13 +23,14 @@ import {
   Icon,
   CloseIcon,
 } from "@gluestack-ui/themed"
+import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
 import { ProductDTO } from "@dtos/ProductDTO"
-import { ProductImageDTO } from "@dtos/ProductImageDTO"
 
 import { Badge } from "@components/Badge"
+import { Toast } from "@components/Toast"
 import { Avatar } from "@components/Avatar"
 import { Button } from "@components/Button"
 import { Header } from "@components/Header"
@@ -42,11 +43,10 @@ import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Barcode from "phosphor-react-native/src/icons/Barcode"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
 import TrashSimple from "phosphor-react-native/src/icons/TrashSimple"
-import { AppError } from "@utils/AppError"
-import { Toast } from "@components/Toast"
+
 import { api } from "@services/api"
-import { paymentMethods } from "@dtos/PaymentMethodDTO"
-import { ModalBody } from "@gluestack-ui/themed"
+import { AppError } from "@utils/AppError"
+
 import { formatCurrency } from "@utils/CurrencyMask"
 
 export type AdDetails = {

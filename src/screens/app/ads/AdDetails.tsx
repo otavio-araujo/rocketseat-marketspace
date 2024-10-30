@@ -1,12 +1,5 @@
-import { useCallback, useEffect, useState } from "react"
 import { Linking, Platform } from "react-native"
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native"
-
-import { AppError } from "@utils/AppError"
+import { useNavigation, useRoute } from "@react-navigation/native"
 
 import {
   VStack,
@@ -19,7 +12,6 @@ import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
-import { api } from "@services/api"
 import { ProductDTO } from "@dtos/ProductDTO"
 
 import { Badge } from "@components/Badge"
@@ -34,6 +26,7 @@ import QrCode from "phosphor-react-native/src/icons/QrCode"
 import Barcode from "phosphor-react-native/src/icons/Barcode"
 import CreditCard from "phosphor-react-native/src/icons/CreditCard"
 import WhatsappLogo from "phosphor-react-native/src/icons/WhatsappLogo"
+
 import { formatCurrency } from "@utils/CurrencyMask"
 
 type RouteParamsProps = {

@@ -1,10 +1,10 @@
 import { TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 import { HStack, Text, View } from "@gluestack-ui/themed"
+import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 
-import ArrowLeft from "phosphor-react-native/src/icons/ArrowLeft"
 import Plus from "phosphor-react-native/src/icons/Plus"
+import ArrowLeft from "phosphor-react-native/src/icons/ArrowLeft"
 import PencilSimpleLine from "phosphor-react-native/src/icons/PencilSimpleLine"
 
 type Props = TouchableOpacityProps & {

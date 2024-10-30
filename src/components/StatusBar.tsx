@@ -1,6 +1,7 @@
-import { View } from "@gluestack-ui/themed"
 import { ComponentProps } from "react"
 import { Platform, StatusBar as RNStatusBar } from "react-native"
+
+import { View } from "@gluestack-ui/themed"
 
 type Props = ComponentProps<typeof RNStatusBar> & {
   barStyle?: "dark-content" | "light-content"

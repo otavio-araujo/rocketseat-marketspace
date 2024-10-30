@@ -1,18 +1,7 @@
 import { useCallback, useState } from "react"
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 
-import {
-  FlatList,
-  HStack,
-  Text,
-  VStack,
-  set,
-  useToast,
-} from "@gluestack-ui/themed"
+import { FlatList, HStack, Text, VStack, useToast } from "@gluestack-ui/themed"
 
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
@@ -24,10 +13,10 @@ import { AppError } from "@utils/AppError"
 
 import { Toast } from "@components/Toast"
 import { Header } from "@components/Header"
+import { Loading } from "@components/Loading"
 import { Selectbox } from "@components/Selectbox"
 import { ProductCard } from "@components/ProductCard"
 import { EmptyProducts } from "@components/EmptyProducts"
-import { Loading } from "@components/Loading"
 
 export function UserAds() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()

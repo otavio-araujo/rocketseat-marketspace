@@ -8,7 +8,9 @@ import { useSharedValue } from "react-native-reanimated"
 
 import { Box, Image, Text, View } from "@gluestack-ui/themed"
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"
+
 import { ProductImageDTO } from "@dtos/ProductImageDTO"
+
 import { api } from "@services/api"
 
 type CarouselProps = React.ComponentProps<typeof View> & {

@@ -1,19 +1,20 @@
-import { Icon, View } from "@gluestack-ui/themed"
-import { SelectIcon } from "@gluestack-ui/themed"
-import { SelectInput } from "@gluestack-ui/themed"
-import { SelectTrigger } from "@gluestack-ui/themed"
-import { SelectPortal } from "@gluestack-ui/themed"
-import { SelectBackdrop } from "@gluestack-ui/themed"
-import { SelectContent } from "@gluestack-ui/themed"
-import { SelectDragIndicatorWrapper } from "@gluestack-ui/themed"
-import { SelectDragIndicator } from "@gluestack-ui/themed"
-import { SelectItem } from "@gluestack-ui/themed"
-import { Select as GluestackSelect } from "@gluestack-ui/themed"
+import { ComponentProps } from "react"
+import {
+  SelectIcon,
+  SelectItem,
+  SelectInput,
+  SelectPortal,
+  SelectTrigger,
+  SelectContent,
+  SelectBackdrop,
+  SelectDragIndicator,
+  Select as GluestackSelect,
+  SelectDragIndicatorWrapper,
+} from "@gluestack-ui/themed"
 
 import CaretDown from "phosphor-react-native/src/icons/CaretDown"
 
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"
-import { ComponentProps } from "react"
 
 type SelectboxProps = ComponentProps<typeof GluestackSelect> & {
   selectedValue: string
@@ -53,9 +54,6 @@ export function Selectbox({ selectedValue, values, ...rest }: SelectboxProps) {
               value={value}
             />
           ))}
-          {/* <SelectItem label="Todos" value="todos" />
-          <SelectItem label="Ativos" value="ativos" />
-          <SelectItem label="Desativados" value="desativados" /> */}
         </SelectContent>
       </SelectPortal>
     </GluestackSelect>

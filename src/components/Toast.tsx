@@ -1,19 +1,17 @@
+import { ComponentProps } from "react"
+import { TouchableOpacity } from "react-native"
+
 import {
-  Toast as GluestackToast,
-  ToastTitle,
-  ToastDescription,
-  Pressable,
-  Icon,
   VStack,
   HStack,
-  View,
+  ToastTitle,
+  ToastDescription,
+  Toast as GluestackToast,
 } from "@gluestack-ui/themed"
 
-import X from "phosphor-react-native/src/icons/X"
+import { gluestackUIConfig } from "@config/gluestack-ui.config"
 
-import { gluestackUIConfig } from "../../config/gluestack-ui.config"
-import { TouchableOpacity } from "react-native"
-import { ComponentProps } from "react"
+import X from "phosphor-react-native/src/icons/X"
 
 type Props = ComponentProps<typeof GluestackToast> & {
   id: string

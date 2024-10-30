@@ -5,8 +5,8 @@ import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 
 import X from "phosphor-react-native/src/icons/X"
 
-import { ProductImageDTO } from "@dtos/ProductImageDTO"
 import { api } from "@services/api"
+import { ProductImageDTO } from "@dtos/ProductImageDTO"
 
 type Props = {
   photo: ProductImageDTO

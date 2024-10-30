@@ -1,9 +1,9 @@
 import { ComponentProps } from "react"
 import {
-  Avatar as GluestackAvatar,
   Fab,
   FabIcon,
   AvatarImage,
+  Avatar as GluestackAvatar,
 } from "@gluestack-ui/themed"
 
 import { gluestackUIConfig } from "../../config/gluestack-ui.config"

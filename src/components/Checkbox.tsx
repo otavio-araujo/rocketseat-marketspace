@@ -1,9 +1,9 @@
 import {
-  Checkbox as GluestackCheckbox,
-  CheckboxIndicator,
+  CheckIcon,
   CheckboxIcon,
   CheckboxLabel,
-  CheckIcon,
+  CheckboxIndicator,
+  Checkbox as GluestackCheckbox,
 } from "@gluestack-ui/themed"
 import { ComponentProps } from "react"
 

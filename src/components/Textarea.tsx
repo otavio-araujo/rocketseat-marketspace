@@ -1,10 +1,10 @@
 import { ComponentProps } from "react"
 import {
   FormControl,
+  TextareaInput,
   FormControlError,
   FormControlErrorText,
   Textarea as GluestackTextarea,
-  TextareaInput,
 } from "@gluestack-ui/themed"
 
 type Props = ComponentProps<typeof TextareaInput> & {
