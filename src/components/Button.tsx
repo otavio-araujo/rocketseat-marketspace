@@ -44,6 +44,7 @@ export function Button({
           : "$gray400"
       }
       disabled={isLoading}
+      opacity={isLoading ? 0.75 : 1}
     >
       {isLoading ? (
         <ButtonSpinner

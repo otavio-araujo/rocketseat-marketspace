@@ -36,6 +36,7 @@ import { paymentMethods } from "@dtos/PaymentMethodDTO"
 import { formatCurrency } from "@utils/CurrencyMask"
 import { ProductDTO } from "@dtos/ProductDTO"
 import { ProductImageDTO } from "@dtos/ProductImageDTO"
+import { useState } from "react"
 
 type RouteParamsProps = {
   isEditing?: boolean
@@ -45,6 +46,7 @@ export function AdPreview() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
   const { isEditing } = useRoute().params as RouteParamsProps
+  const [isLoading, setIsLoading] = useState(false)
 
   const toast = useToast()
 
@@ -133,6 +135,8 @@ export function AdPreview() {
   }
 
   async function handleCreateOrUpdateAd() {
+    setIsLoading(true)
+
     const paymentsFiltered = productCreate.payment_methods.map((payment) => {
       return payment.key
     })
@@ -203,6 +207,8 @@ export function AdPreview() {
           />
         ),
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -353,6 +359,7 @@ export function AdPreview() {
           flex={1}
           icon={ArrowLeft}
           onPress={handleGoBack}
+          isLoading={isLoading}
         />
 
         <Button
@@ -362,6 +369,7 @@ export function AdPreview() {
           flex={1}
           icon={Tag}
           onPress={handleCreateOrUpdateAd}
+          isLoading={isLoading}
         />
       </HStack>
     </VStack>

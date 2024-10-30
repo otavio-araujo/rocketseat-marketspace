@@ -68,6 +68,8 @@ export function UserAdDetail() {
 
   const { tokens } = gluestackUIConfig
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const { productItem, updatedProduct } = useRoute().params as RouteParamsProps
 
   const [product, setProduct] = useState<ProductDTO>(productItem as ProductDTO)
@@ -77,6 +79,7 @@ export function UserAdDetail() {
   }
 
   async function handleIsActive() {
+    setIsLoading(true)
     try {
       const response = await api.patch(`/products/${product.id}`, {
         is_active: !product.is_active,
@@ -118,10 +121,13 @@ export function UserAdDetail() {
           />
         ),
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
   async function handleDeleteAd(productId: string) {
+    setIsLoading(true)
     try {
       await api.delete(`/products/${productId}`)
 
@@ -147,6 +153,7 @@ export function UserAdDetail() {
       })
     } finally {
       setShowModal(false)
+      setIsLoading(false)
     }
   }
 
@@ -285,6 +292,7 @@ export function UserAdDetail() {
                 buttonVariant="dark"
                 icon={Power}
                 onPress={handleIsActive}
+                isLoading={isLoading}
               />
             ) : (
               <Button
@@ -292,6 +300,7 @@ export function UserAdDetail() {
                 buttonVariant="primary"
                 icon={Power}
                 onPress={handleIsActive}
+                isLoading={isLoading}
               />
             )}
             <Button
@@ -299,6 +308,7 @@ export function UserAdDetail() {
               buttonVariant="muted"
               icon={TrashSimple}
               onPress={() => setShowModal(true)}
+              isLoading={isLoading}
             />
           </VStack>
         </VStack>
