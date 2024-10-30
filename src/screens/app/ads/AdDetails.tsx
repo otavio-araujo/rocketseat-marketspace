@@ -85,8 +85,14 @@ export function AdDetails() {
               w={"$full"}
               justifyContent="space-between"
               alignItems="center"
+              gap={"$2"}
             >
-              <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
+              <Text
+                fontFamily={"$heading"}
+                fontSize={"$lg"}
+                color={"$gray100"}
+                flex={1}
+              >
                 {productItem.name}
               </Text>
               <HStack alignItems="baseline">

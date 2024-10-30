@@ -65,6 +65,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   function userAndTokenUpdate(userData: UserDTO, token: string) {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`
+
     setUser(userData)
   }
 

@@ -66,6 +66,8 @@ export function ProductCard({
           fontSize={"$sm"}
           mt={"$1"}
           color={"$gray200"}
+          w={"$full"}
+          numberOfLines={2}
         >
           {productData.name}
         </Text>

@@ -253,7 +253,12 @@ export function AdPreview() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
+              <Text
+                fontFamily={"$heading"}
+                fontSize={"$lg"}
+                color={"$gray100"}
+                flex={1}
+              >
                 {productCreate.name}
               </Text>
               <HStack alignItems="baseline">

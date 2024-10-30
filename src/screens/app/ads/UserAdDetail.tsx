@@ -9,6 +9,7 @@ import {
 import { gluestackUIConfig } from "../../../../config/gluestack-ui.config"
 import {
   VStack,
+  ScrollView,
   Text,
   HStack,
   useToast,
@@ -173,127 +174,136 @@ export function UserAdDetail() {
         headerVariant="adDetails"
         onPress={handleGoBack}
       />
-      <ProductCarousel
-        data={product.product_images || []}
-        mt={"$3"}
-        isActive={product.is_active}
-      />
+      <ScrollView mb={"$10"}>
+        <ProductCarousel
+          data={product.product_images || []}
+          mt={"$3"}
+          isActive={product.is_active}
+        />
 
-      <VStack w={"$full"} px={"$6"} mt={"$5"} pb={"$7"} gap={"$6"}>
-        <HStack alignItems="center">
-          <Avatar imageSource={product.user?.avatar || null} />
-          <Text fontFamily={"$body"} fontSize={"$md"} ml={"$2"}>
-            {product.user?.name}
-          </Text>
-        </HStack>
-
-        <VStack alignItems="flex-start" gap={"$2"}>
-          <HStack>
-            <Badge
-              badgeVariant="muted"
-              label={product.is_new ? "novo" : "usado"}
-              mx={"auto"}
-            />
+        <VStack gap={"$6"} w={"$full"} px={"$6"} mt={"$5"} pb={"$7"}>
+          <HStack alignItems="center">
+            <Avatar imageSource={product.user?.avatar || null} />
+            <Text fontFamily={"$body"} fontSize={"$md"} ml={"$2"}>
+              {product.user?.name}
+            </Text>
           </HStack>
 
-          <HStack
-            w={"$full"}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Text fontFamily={"$heading"} fontSize={"$lg"} color={"$gray100"}>
-              {product.name}
-            </Text>
-            <HStack alignItems="baseline">
+          <VStack alignItems="flex-start" gap={"$2"}>
+            <HStack>
+              <Badge
+                badgeVariant="muted"
+                label={product.is_new ? "novo" : "usado"}
+                mx={"auto"}
+              />
+            </HStack>
+
+            <HStack
+              w={"$full"}
+              justifyContent="space-between"
+              alignItems="center"
+              gap={"$2"}
+            >
               <Text
-                fontFamily={"$heading"}
-                fontSize={"$sm"}
-                color={"$blueLight"}
-              >
-                R${" "}
-              </Text>
-              <Text
+                flex={1}
                 fontFamily={"$heading"}
                 fontSize={"$lg"}
-                color={"$blueLight"}
+                color={"$gray100"}
               >
-                {formatCurrency(String(product.price))}
+                {product.name}
               </Text>
+              <HStack alignItems="baseline">
+                <Text
+                  fontFamily={"$heading"}
+                  fontSize={"$sm"}
+                  color={"$blueLight"}
+                >
+                  R${" "}
+                </Text>
+                <Text
+                  fontFamily={"$heading"}
+                  fontSize={"$lg"}
+                  color={"$blueLight"}
+                >
+                  {formatCurrency(String(product.price))}
+                </Text>
+              </HStack>
             </HStack>
+
+            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
+              {product.description}
+            </Text>
+          </VStack>
+
+          <HStack w={"$full"} gap={"$2"}>
+            <Text fontFamily={"$heading"} fontSize={"$sm"} color={"$gray200"}>
+              Aceita troca?
+            </Text>
+            <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
+              {product.accept_trade ? "Sim" : "Não"}
+            </Text>
           </HStack>
 
-          <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-            {product.description}
-          </Text>
-        </VStack>
+          <VStack w={"$full"} gap={"$2"}>
+            <Text fontFamily={"$heading"} fontSize={"$sm"} color={"$gray200"}>
+              Meios de pagamento:{" "}
+            </Text>
 
-        <HStack w={"$full"} gap={"$2"}>
-          <Text fontFamily={"$heading"} fontSize={"$sm"} color={"$gray200"}>
-            Aceita troca?
-          </Text>
-          <Text fontFamily={"$body"} fontSize={"$sm"} color={"$gray200"}>
-            {product.accept_trade ? "Sim" : "Não"}
-          </Text>
-        </HStack>
+            {product.payment_methods.map((payment) => (
+              <HStack w={"$full"} gap={"$2"} key={payment.key}>
+                {payment.key === "boleto" && (
+                  <Barcode size={18} color={tokens.colors.gray100} />
+                )}
+                {payment.key === "pix" && (
+                  <QrCode size={18} color={tokens.colors.gray100} />
+                )}
+                {payment.key === "cash" && (
+                  <Money size={18} color={tokens.colors.gray100} />
+                )}
+                {payment.key === "card" && (
+                  <CreditCard size={18} color={tokens.colors.gray100} />
+                )}
+                {payment.key === "deposit" && (
+                  <Bank size={18} color={tokens.colors.gray100} />
+                )}
+                <Text
+                  textTransform="capitalize"
+                  fontFamily={"$body"}
+                  fontSize={"$sm"}
+                  color={"$gray200"}
+                >
+                  {payment.name}
+                </Text>
+              </HStack>
+            ))}
+          </VStack>
 
-        <VStack w={"$full"} gap={"$2"}>
-          <Text fontFamily={"$heading"} fontSize={"$sm"} color={"$gray200"}>
-            Meios de pagamento:{" "}
-          </Text>
-
-          {product.payment_methods.map((payment) => (
-            <HStack w={"$full"} gap={"$2"} key={payment.key}>
-              {payment.key === "boleto" && (
-                <Barcode size={18} color={tokens.colors.gray100} />
-              )}
-              {payment.key === "pix" && (
-                <QrCode size={18} color={tokens.colors.gray100} />
-              )}
-              {payment.key === "cash" && (
-                <Money size={18} color={tokens.colors.gray100} />
-              )}
-              {payment.key === "card" && (
-                <CreditCard size={18} color={tokens.colors.gray100} />
-              )}
-              {payment.key === "deposit" && (
-                <Bank size={18} color={tokens.colors.gray100} />
-              )}
-              <Text
-                textTransform="capitalize"
-                fontFamily={"$body"}
-                fontSize={"$sm"}
-                color={"$gray200"}
-              >
-                {payment.name}
-              </Text>
-            </HStack>
-          ))}
-        </VStack>
-
-        <VStack w={"$full"} gap={"$2"}>
-          {product.is_active ? (
+          <VStack w={"$full"} gap={"$2"}>
+            {product.is_active ? (
+              <Button
+                label="Desativar anúncio"
+                buttonVariant="dark"
+                icon={Power}
+                onPress={handleIsActive}
+              />
+            ) : (
+              <Button
+                label="Reativar anúncio"
+                buttonVariant="primary"
+                icon={Power}
+                onPress={handleIsActive}
+              />
+            )}
             <Button
-              label="Desativar anúncio"
-              buttonVariant="dark"
-              icon={Power}
-              onPress={handleIsActive}
+              label="Excluir anúncio"
+              buttonVariant="muted"
+              icon={TrashSimple}
+              onPress={() => setShowModal(true)}
             />
-          ) : (
-            <Button
-              label="Reativar anúncio"
-              buttonVariant="primary"
-              icon={Power}
-              onPress={handleIsActive}
-            />
-          )}
-          <Button
-            label="Excluir anúncio"
-            buttonVariant="muted"
-            icon={TrashSimple}
-            onPress={() => setShowModal(true)}
-          />
+          </VStack>
         </VStack>
-      </VStack>
+      </ScrollView>
+
       <Modal
         isOpen={showModal}
         onClose={() => {
